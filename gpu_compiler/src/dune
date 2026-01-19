@@ -1,0 +1,8 @@
+(library
+ (name gpu_compiler)
+ (public_name zaia.gpu_compiler)
+ (inline_tests
+  (modes native))
+ (libraries core core_kernel.composition_infix olivine)
+ (preprocess
+  (pps ppx_expect ppx_jane)))

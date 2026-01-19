@@ -1,0 +1,16 @@
+(library
+ (name zaia_spirv_raw)
+ (public_name zaia.spirv_raw)
+ (libraries core core_kernel.nonempty_list ocplib-endian)
+ (preprocess
+  (pps ppx_expect ppx_jane)))
+
+(rule
+ (targets spirv_generated.ml)
+ (deps
+  (:spec
+   %{project_root}/third_party/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json)
+  (:gen_bin
+   %{project_root}/gpu_compiler/spirv_raw/bin/spirv_spec_gen_bin.exe))
+ (action
+  (run %{gen_bin} --spec-file %{spec} --output-file %{targets})))
