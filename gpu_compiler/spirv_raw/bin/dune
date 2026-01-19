@@ -1,0 +1,10 @@
+(executable
+ (name spirv_spec_gen_bin)
+ (libraries
+  cmdliner
+  core
+  core_kernel.composition_infix
+  core_kernel.nonempty_list
+  ppxlib)
+ (preprocess
+  (pps ppx_jane ppx_yojson_conv ppxlib.metaquot)))
