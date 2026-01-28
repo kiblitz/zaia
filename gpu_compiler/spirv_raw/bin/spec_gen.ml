@@ -233,7 +233,7 @@ end
 
 module Requirements = struct
   let generate
-        ?(extra_body = [])
+        ?(extra_body = Fn.const [])
         (grammar : Grammar.t)
         ~name
         ~module_
@@ -260,14 +260,43 @@ module Requirements = struct
     in
     let extra_body =
       let include_comparable = [%stri include Comparable.Make_plain (T)] in
-      include_comparable :: extra_body
+      include_comparable :: extra_body all
     in
     Ppxlib.Ast_helper.Str.module_ module_binding |> Common.wrap_module_exn ~extra_body
   ;;
 
   module Version = struct
     let generate =
-      let extra_body =
+      let extra_body all =
+        let major_and_minor_fn =
+          let cases getter =
+            let%map.List (version : Grammar.Version.t) = Set.to_list all in
+            Ppxlib.Ast_helper.Exp.case
+              (Ppxlib.Ast_helper.Pat.construct
+                 { txt = Lident (Grammar.Version.to_string version |> Util.machinize)
+                 ; loc
+                 }
+                 None)
+              (Ppxlib.Ast_builder.Default.eint32 (getter version) ~loc)
+          in
+          let major_fn =
+            let body = Ppxlib.Ast_helper.Exp.function_ (cases Grammar.Version.major) in
+            [%stri let major = [%e body]]
+          in
+          let minor_fn =
+            let body = Ppxlib.Ast_helper.Exp.function_ (cases Grammar.Version.minor) in
+            [%stri let minor = [%e body]]
+          in
+          [ major_fn; minor_fn ]
+        in
+        let value_fn =
+          [%stri
+            let value t =
+              let major_value = Int32.shift_left (major t) 16 in
+              let minor_value = Int32.shift_left (minor t) 8 in
+              Int32.bit_or minor_value major_value
+            ;;]
+        in
         let valid_versions_fn =
           [%stri
             let valid_versions ~required ~last =
@@ -276,7 +305,7 @@ module Requirements = struct
                 && Option.value_map last ~default:true ~f:(fun last -> t <= last))
             ;;]
         in
-        [ valid_versions_fn ]
+        major_and_minor_fn @ [ value_fn; valid_versions_fn ]
       in
       generate
         ~name:"Version"
