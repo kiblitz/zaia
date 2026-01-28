@@ -23,7 +23,7 @@ module Version = struct
       { major : int32
       ; minor : int32
       }
-    [@@deriving compare, sexp_of]
+    [@@deriving compare, fields ~getters, sexp_of]
   end
 
   include T

@@ -9,7 +9,7 @@ module Version : sig
     { major : int32
     ; minor : int32
     }
-  [@@deriving to_string]
+  [@@deriving fields ~getters, to_string]
 
   include Comparable.S_plain with type t := t
 
