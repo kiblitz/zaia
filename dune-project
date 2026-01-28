@@ -18,9 +18,9 @@
 (package
  (name zaia)
  (synopsis
-  "")
+  "some synopsis")
  (description
-  "")
+  "some description")
  (depends
   "bignum"
   "cmdliner"
@@ -30,5 +30,7 @@
    (>= "3.18.1"))
   ("ocaml"
    (>= "5.3.0"))
-  "olivine"
-  "ppx_jane"))
+  "ocplib-endian"
+  "ppx_jane"
+  "ppx_yojson_conv"
+  "yojson"))
