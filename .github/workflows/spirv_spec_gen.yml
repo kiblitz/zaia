@@ -1,0 +1,44 @@
+name: generate spirv spec
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 5.3.0
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build project
+        run: |
+          opam switch create . 5.3.0 --deps-only
+          opam install olivine.main
+          opam exec -- dune build
+
+      - name: Setup deployment folder
+        run: |
+          mkdir output
+          cp _build/install/default/lib/zaia/spirv_raw/spirv_generated.ml output/
+
+      - name: Push to branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: spirv_generated
+          FOLDER: output
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Generated SPIR-V: {sha}"
