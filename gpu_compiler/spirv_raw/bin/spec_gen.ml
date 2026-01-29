@@ -319,12 +319,28 @@ module Requirements = struct
 
   module Extension = struct
     let generate =
+      let extra_body all =
+        let to_string_fn =
+          let cases =
+            let%map.List extension = Set.to_list all in
+            Ppxlib.Ast_helper.Exp.case
+              (Ppxlib.Ast_helper.Pat.construct
+                 { txt = Lident (Util.machinize extension); loc }
+                 None)
+              (Ppxlib.Ast_builder.Default.estring extension ~loc)
+          in
+          let body = Ppxlib.Ast_helper.Exp.function_ cases in
+          [%stri let to_string = [%e body]]
+        in
+        [ to_string_fn ]
+      in
       generate
         ~name:"Extension"
         ~module_:(module String)
         ~of_instruction:Grammar.Instruction.extensions
         ~of_enumerant:Grammar.Operand_kind.Enumerant.extensions
         ~m_to_string:Fn.id
+        ~extra_body
     ;;
   end
 
