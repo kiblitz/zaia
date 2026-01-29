@@ -17,6 +17,28 @@ module Requirements =
           end
         include T
         include (Comparable.Make_plain)(T)
+        let major =
+          function
+          | V1_0 -> 1l
+          | V1_1 -> 1l
+          | V1_2 -> 1l
+          | V1_3 -> 1l
+          | V1_4 -> 1l
+          | V1_5 -> 1l
+          | V1_6 -> 1l
+        let minor =
+          function
+          | V1_0 -> 0l
+          | V1_1 -> 1l
+          | V1_2 -> 2l
+          | V1_3 -> 3l
+          | V1_4 -> 4l
+          | V1_5 -> 5l
+          | V1_6 -> 6l
+        let value t =
+          let major_value = Int32.shift_left (major t) 16 in
+          let minor_value = Int32.shift_left (minor t) 8 in
+          Int32.bit_or minor_value major_value
         let valid_versions ~required ~last =
           List.filter all
             ~f:(fun t ->
