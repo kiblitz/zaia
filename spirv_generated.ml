@@ -234,6 +234,259 @@ module Requirements =
           end
         include T
         include (Comparable.Make_plain)(T)
+        let to_string =
+          function
+          | Spv_altera_arbitrary_precision_fixed_point ->
+              "SPV_ALTERA_arbitrary_precision_fixed_point"
+          | Spv_altera_arbitrary_precision_floating_point ->
+              "SPV_ALTERA_arbitrary_precision_floating_point"
+          | Spv_altera_arbitrary_precision_integers ->
+              "SPV_ALTERA_arbitrary_precision_integers"
+          | Spv_altera_blocking_pipes -> "SPV_ALTERA_blocking_pipes"
+          | Spv_altera_fpga_argument_interfaces ->
+              "SPV_ALTERA_fpga_argument_interfaces"
+          | Spv_altera_fpga_buffer_location ->
+              "SPV_ALTERA_fpga_buffer_location"
+          | Spv_altera_fpga_cluster_attributes ->
+              "SPV_ALTERA_fpga_cluster_attributes"
+          | Spv_altera_fpga_dsp_control -> "SPV_ALTERA_fpga_dsp_control"
+          | Spv_altera_fpga_invocation_pipelining_attributes ->
+              "SPV_ALTERA_fpga_invocation_pipelining_attributes"
+          | Spv_altera_fpga_latency_control ->
+              "SPV_ALTERA_fpga_latency_control"
+          | Spv_altera_fpga_loop_controls -> "SPV_ALTERA_fpga_loop_controls"
+          | Spv_altera_fpga_memory_accesses ->
+              "SPV_ALTERA_fpga_memory_accesses"
+          | Spv_altera_fpga_memory_attributes ->
+              "SPV_ALTERA_fpga_memory_attributes"
+          | Spv_altera_fpga_reg -> "SPV_ALTERA_fpga_reg"
+          | Spv_altera_global_variable_fpga_decorations ->
+              "SPV_ALTERA_global_variable_fpga_decorations"
+          | Spv_altera_io_pipes -> "SPV_ALTERA_io_pipes"
+          | Spv_altera_loop_fuse -> "SPV_ALTERA_loop_fuse"
+          | Spv_altera_runtime_aligned -> "SPV_ALTERA_runtime_aligned"
+          | Spv_altera_task_sequence -> "SPV_ALTERA_task_sequence"
+          | Spv_altera_usm_storage_classes ->
+              "SPV_ALTERA_usm_storage_classes"
+          | Spv_amdx_shader_enqueue -> "SPV_AMDX_shader_enqueue"
+          | Spv_amd_gpu_shader_half_float_fetch ->
+              "SPV_AMD_gpu_shader_half_float_fetch"
+          | Spv_amd_shader_ballot -> "SPV_AMD_shader_ballot"
+          | Spv_amd_shader_early_and_late_fragment_tests ->
+              "SPV_AMD_shader_early_and_late_fragment_tests"
+          | Spv_amd_shader_explicit_vertex_parameter ->
+              "SPV_AMD_shader_explicit_vertex_parameter"
+          | Spv_amd_shader_fragment_mask -> "SPV_AMD_shader_fragment_mask"
+          | Spv_amd_shader_image_load_store_lod ->
+              "SPV_AMD_shader_image_load_store_lod"
+          | Spv_amd_texture_gather_bias_lod ->
+              "SPV_AMD_texture_gather_bias_lod"
+          | Spv_arm_cooperative_matrix_layouts ->
+              "SPV_ARM_cooperative_matrix_layouts"
+          | Spv_arm_core_builtins -> "SPV_ARM_core_builtins"
+          | Spv_arm_graph -> "SPV_ARM_graph"
+          | Spv_arm_tensors -> "SPV_ARM_tensors"
+          | Spv_ext_arithmetic_fence -> "SPV_EXT_arithmetic_fence"
+          | Spv_ext_demote_to_helper_invocation ->
+              "SPV_EXT_demote_to_helper_invocation"
+          | Spv_ext_descriptor_indexing -> "SPV_EXT_descriptor_indexing"
+          | Spv_ext_float8 -> "SPV_EXT_float8"
+          | Spv_ext_fragment_fully_covered ->
+              "SPV_EXT_fragment_fully_covered"
+          | Spv_ext_fragment_invocation_density ->
+              "SPV_EXT_fragment_invocation_density"
+          | Spv_ext_fragment_shader_interlock ->
+              "SPV_EXT_fragment_shader_interlock"
+          | Spv_ext_long_vector -> "SPV_EXT_long_vector"
+          | Spv_ext_mesh_shader -> "SPV_EXT_mesh_shader"
+          | Spv_ext_opacity_micromap -> "SPV_EXT_opacity_micromap"
+          | Spv_ext_optnone -> "SPV_EXT_optnone"
+          | Spv_ext_physical_storage_buffer ->
+              "SPV_EXT_physical_storage_buffer"
+          | Spv_ext_replicated_composites -> "SPV_EXT_replicated_composites"
+          | Spv_ext_shader_64bit_indexing -> "SPV_EXT_shader_64bit_indexing"
+          | Spv_ext_shader_atomic_float16_add ->
+              "SPV_EXT_shader_atomic_float16_add"
+          | Spv_ext_shader_atomic_float_add ->
+              "SPV_EXT_shader_atomic_float_add"
+          | Spv_ext_shader_atomic_float_min_max ->
+              "SPV_EXT_shader_atomic_float_min_max"
+          | Spv_ext_shader_image_int64 -> "SPV_EXT_shader_image_int64"
+          | Spv_ext_shader_invocation_reorder ->
+              "SPV_EXT_shader_invocation_reorder"
+          | Spv_ext_shader_stencil_export -> "SPV_EXT_shader_stencil_export"
+          | Spv_ext_shader_tile_image -> "SPV_EXT_shader_tile_image"
+          | Spv_ext_shader_viewport_index_layer ->
+              "SPV_EXT_shader_viewport_index_layer"
+          | Spv_google_decorate_string -> "SPV_GOOGLE_decorate_string"
+          | Spv_google_hlsl_functionality1 ->
+              "SPV_GOOGLE_hlsl_functionality1"
+          | Spv_google_user_type -> "SPV_GOOGLE_user_type"
+          | Spv_intel_2d_block_io -> "SPV_INTEL_2d_block_io"
+          | Spv_intel_arbitrary_precision_fixed_point ->
+              "SPV_INTEL_arbitrary_precision_fixed_point"
+          | Spv_intel_arbitrary_precision_floating_point ->
+              "SPV_INTEL_arbitrary_precision_floating_point"
+          | Spv_intel_arbitrary_precision_integers ->
+              "SPV_INTEL_arbitrary_precision_integers"
+          | Spv_intel_bfloat16_conversion -> "SPV_INTEL_bfloat16_conversion"
+          | Spv_intel_bindless_images -> "SPV_INTEL_bindless_images"
+          | Spv_intel_blocking_pipes -> "SPV_INTEL_blocking_pipes"
+          | Spv_intel_cache_controls -> "SPV_INTEL_cache_controls"
+          | Spv_intel_debug_module -> "SPV_INTEL_debug_module"
+          | Spv_intel_device_side_avc_motion_estimation ->
+              "SPV_INTEL_device_side_avc_motion_estimation"
+          | Spv_intel_float_controls2 -> "SPV_INTEL_float_controls2"
+          | Spv_intel_fp_fast_math_mode -> "SPV_INTEL_fp_fast_math_mode"
+          | Spv_intel_fp_max_error -> "SPV_INTEL_fp_max_error"
+          | Spv_intel_fpga_argument_interfaces ->
+              "SPV_INTEL_fpga_argument_interfaces"
+          | Spv_intel_fpga_buffer_location ->
+              "SPV_INTEL_fpga_buffer_location"
+          | Spv_intel_fpga_cluster_attributes ->
+              "SPV_INTEL_fpga_cluster_attributes"
+          | Spv_intel_fpga_dsp_control -> "SPV_INTEL_fpga_dsp_control"
+          | Spv_intel_fpga_invocation_pipelining_attributes ->
+              "SPV_INTEL_fpga_invocation_pipelining_attributes"
+          | Spv_intel_fpga_latency_control ->
+              "SPV_INTEL_fpga_latency_control"
+          | Spv_intel_fpga_loop_controls -> "SPV_INTEL_fpga_loop_controls"
+          | Spv_intel_fpga_memory_accesses ->
+              "SPV_INTEL_fpga_memory_accesses"
+          | Spv_intel_fpga_memory_attributes ->
+              "SPV_INTEL_fpga_memory_attributes"
+          | Spv_intel_fpga_reg -> "SPV_INTEL_fpga_reg"
+          | Spv_intel_function_pointers -> "SPV_INTEL_function_pointers"
+          | Spv_intel_function_variants -> "SPV_INTEL_function_variants"
+          | Spv_intel_global_variable_fpga_decorations ->
+              "SPV_INTEL_global_variable_fpga_decorations"
+          | Spv_intel_global_variable_host_access ->
+              "SPV_INTEL_global_variable_host_access"
+          | Spv_intel_inline_assembly -> "SPV_INTEL_inline_assembly"
+          | Spv_intel_int4 -> "SPV_INTEL_int4"
+          | Spv_intel_io_pipes -> "SPV_INTEL_io_pipes"
+          | Spv_intel_kernel_attributes -> "SPV_INTEL_kernel_attributes"
+          | Spv_intel_long_composites -> "SPV_INTEL_long_composites"
+          | Spv_intel_loop_fuse -> "SPV_INTEL_loop_fuse"
+          | Spv_intel_masked_gather_scatter ->
+              "SPV_INTEL_masked_gather_scatter"
+          | Spv_intel_maximum_registers -> "SPV_INTEL_maximum_registers"
+          | Spv_intel_media_block_io -> "SPV_INTEL_media_block_io"
+          | Spv_intel_memory_access_aliasing ->
+              "SPV_INTEL_memory_access_aliasing"
+          | Spv_intel_optnone -> "SPV_INTEL_optnone"
+          | Spv_intel_runtime_aligned -> "SPV_INTEL_runtime_aligned"
+          | Spv_intel_shader_integer_functions2 ->
+              "SPV_INTEL_shader_integer_functions2"
+          | Spv_intel_split_barrier -> "SPV_INTEL_split_barrier"
+          | Spv_intel_subgroup_buffer_prefetch ->
+              "SPV_INTEL_subgroup_buffer_prefetch"
+          | Spv_intel_subgroup_matrix_multiply_accumulate ->
+              "SPV_INTEL_subgroup_matrix_multiply_accumulate"
+          | Spv_intel_subgroups -> "SPV_INTEL_subgroups"
+          | Spv_intel_task_sequence -> "SPV_INTEL_task_sequence"
+          | Spv_intel_tensor_float32_conversion ->
+              "SPV_INTEL_tensor_float32_conversion"
+          | Spv_intel_ternary_bitwise_function ->
+              "SPV_INTEL_ternary_bitwise_function"
+          | Spv_intel_unstructured_loop_controls ->
+              "SPV_INTEL_unstructured_loop_controls"
+          | Spv_intel_usm_storage_classes -> "SPV_INTEL_usm_storage_classes"
+          | Spv_intel_variable_length_array ->
+              "SPV_INTEL_variable_length_array"
+          | Spv_intel_vector_compute -> "SPV_INTEL_vector_compute"
+          | Spv_khr_16bit_storage -> "SPV_KHR_16bit_storage"
+          | Spv_khr_8bit_storage -> "SPV_KHR_8bit_storage"
+          | Spv_khr_bfloat16 -> "SPV_KHR_bfloat16"
+          | Spv_khr_bit_instructions -> "SPV_KHR_bit_instructions"
+          | Spv_khr_compute_shader_derivatives ->
+              "SPV_KHR_compute_shader_derivatives"
+          | Spv_khr_cooperative_matrix -> "SPV_KHR_cooperative_matrix"
+          | Spv_khr_device_group -> "SPV_KHR_device_group"
+          | Spv_khr_expect_assume -> "SPV_KHR_expect_assume"
+          | Spv_khr_float_controls -> "SPV_KHR_float_controls"
+          | Spv_khr_float_controls2 -> "SPV_KHR_float_controls2"
+          | Spv_khr_fma -> "SPV_KHR_fma"
+          | Spv_khr_fragment_shader_barycentric ->
+              "SPV_KHR_fragment_shader_barycentric"
+          | Spv_khr_fragment_shading_rate -> "SPV_KHR_fragment_shading_rate"
+          | Spv_khr_integer_dot_product -> "SPV_KHR_integer_dot_product"
+          | Spv_khr_linkonce_odr -> "SPV_KHR_linkonce_odr"
+          | Spv_khr_maximal_reconvergence -> "SPV_KHR_maximal_reconvergence"
+          | Spv_khr_multiview -> "SPV_KHR_multiview"
+          | Spv_khr_no_integer_wrap_decoration ->
+              "SPV_KHR_no_integer_wrap_decoration"
+          | Spv_khr_physical_storage_buffer ->
+              "SPV_KHR_physical_storage_buffer"
+          | Spv_khr_post_depth_coverage -> "SPV_KHR_post_depth_coverage"
+          | Spv_khr_quad_control -> "SPV_KHR_quad_control"
+          | Spv_khr_ray_cull_mask -> "SPV_KHR_ray_cull_mask"
+          | Spv_khr_ray_query -> "SPV_KHR_ray_query"
+          | Spv_khr_ray_tracing -> "SPV_KHR_ray_tracing"
+          | Spv_khr_ray_tracing_position_fetch ->
+              "SPV_KHR_ray_tracing_position_fetch"
+          | Spv_khr_relaxed_extended_instruction ->
+              "SPV_KHR_relaxed_extended_instruction"
+          | Spv_khr_shader_atomic_counter_ops ->
+              "SPV_KHR_shader_atomic_counter_ops"
+          | Spv_khr_shader_ballot -> "SPV_KHR_shader_ballot"
+          | Spv_khr_shader_clock -> "SPV_KHR_shader_clock"
+          | Spv_khr_shader_draw_parameters ->
+              "SPV_KHR_shader_draw_parameters"
+          | Spv_khr_storage_buffer_storage_class ->
+              "SPV_KHR_storage_buffer_storage_class"
+          | Spv_khr_subgroup_rotate -> "SPV_KHR_subgroup_rotate"
+          | Spv_khr_subgroup_uniform_control_flow ->
+              "SPV_KHR_subgroup_uniform_control_flow"
+          | Spv_khr_subgroup_vote -> "SPV_KHR_subgroup_vote"
+          | Spv_khr_terminate_invocation -> "SPV_KHR_terminate_invocation"
+          | Spv_khr_uniform_group_instructions ->
+              "SPV_KHR_uniform_group_instructions"
+          | Spv_khr_untyped_pointers -> "SPV_KHR_untyped_pointers"
+          | Spv_khr_variable_pointers -> "SPV_KHR_variable_pointers"
+          | Spv_khr_vulkan_memory_model -> "SPV_KHR_vulkan_memory_model"
+          | Spv_khr_workgroup_memory_explicit_layout ->
+              "SPV_KHR_workgroup_memory_explicit_layout"
+          | Spv_nvx_multiview_per_view_attributes ->
+              "SPV_NVX_multiview_per_view_attributes"
+          | Spv_nv_bindless_texture -> "SPV_NV_bindless_texture"
+          | Spv_nv_cluster_acceleration_structure ->
+              "SPV_NV_cluster_acceleration_structure"
+          | Spv_nv_compute_shader_derivatives ->
+              "SPV_NV_compute_shader_derivatives"
+          | Spv_nv_cooperative_matrix -> "SPV_NV_cooperative_matrix"
+          | Spv_nv_cooperative_matrix2 -> "SPV_NV_cooperative_matrix2"
+          | Spv_nv_cooperative_vector -> "SPV_NV_cooperative_vector"
+          | Spv_nv_displacement_micromap -> "SPV_NV_displacement_micromap"
+          | Spv_nv_fragment_shader_barycentric ->
+              "SPV_NV_fragment_shader_barycentric"
+          | Spv_nv_geometry_shader_passthrough ->
+              "SPV_NV_geometry_shader_passthrough"
+          | Spv_nv_linear_swept_spheres -> "SPV_NV_linear_swept_spheres"
+          | Spv_nv_mesh_shader -> "SPV_NV_mesh_shader"
+          | Spv_nv_raw_access_chains -> "SPV_NV_raw_access_chains"
+          | Spv_nv_ray_tracing -> "SPV_NV_ray_tracing"
+          | Spv_nv_ray_tracing_motion_blur ->
+              "SPV_NV_ray_tracing_motion_blur"
+          | Spv_nv_sample_mask_override_coverage ->
+              "SPV_NV_sample_mask_override_coverage"
+          | Spv_nv_shader_atomic_fp16_vector ->
+              "SPV_NV_shader_atomic_fp16_vector"
+          | Spv_nv_shader_image_footprint -> "SPV_NV_shader_image_footprint"
+          | Spv_nv_shader_invocation_reorder ->
+              "SPV_NV_shader_invocation_reorder"
+          | Spv_nv_shader_sm_builtins -> "SPV_NV_shader_sm_builtins"
+          | Spv_nv_shader_subgroup_partitioned ->
+              "SPV_NV_shader_subgroup_partitioned"
+          | Spv_nv_shading_rate -> "SPV_NV_shading_rate"
+          | Spv_nv_stereo_view_rendering -> "SPV_NV_stereo_view_rendering"
+          | Spv_nv_tensor_addressing -> "SPV_NV_tensor_addressing"
+          | Spv_nv_viewport_array2 -> "SPV_NV_viewport_array2"
+          | Spv_qcom_cooperative_matrix_conversion ->
+              "SPV_QCOM_cooperative_matrix_conversion"
+          | Spv_qcom_image_processing -> "SPV_QCOM_image_processing"
+          | Spv_qcom_image_processing2 -> "SPV_QCOM_image_processing2"
+          | Spv_qcom_tile_shading -> "SPV_QCOM_tile_shading"
       end
   end
 module Instruction_printing_class =
