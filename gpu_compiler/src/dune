@@ -3,6 +3,6 @@
  (public_name zaia.gpu_compiler)
  (inline_tests
   (modes native))
- (libraries core core_kernel.composition_infix olivine)
+ (libraries core core_kernel.composition_infix olivine zaia_spirv_raw)
  (preprocess
   (pps ppx_expect ppx_jane)))

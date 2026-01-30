@@ -1,9 +1,9 @@
 open! Core
 open! Import
 
-let create_raw_array ~header =
-  let code = Header.to_repr_list header in
-  let data = Ctypes.CArray.of_list Ctypes.int32_t code in
+let create_raw_array code =
+  let%map.Or_error compiled = Code.compile code in
+  let data = Ctypes.CArray.of_list Ctypes.int32_t compiled in
   let ptr =
     (* TODO soon: I probably have some fundamental misunderstanding of OCaml
        memory representation but I don't understand why the Olivine API takes
@@ -17,8 +17,8 @@ let create_raw_array ~header =
   Ctypes.CArray.from_ptr ptr (Ctypes.CArray.length data)
 ;;
 
-let compile ~header =
-  let data = create_raw_array ~header in
+let compile code =
+  let%map.Or_error data = create_raw_array code in
   Vk.Types.Shader_module_create_info.make
     ~code_size:(Ctypes.CArray.length data |> Unsigned.Size_t.of_int)
     ~code:data

@@ -1,20 +1,16 @@
 open! Core
 open! Import
 
-module Version : sig
-  type t =
-    { major : Int32.t
-    ; minor : Int32.t
-    }
-end
-
 type t
 
 val create
-  :  ?generator_id:Int32.t
+  :  ?generator_id:int32
   -> ?spirv_version:Version.t
-  -> id_bound:Int32.t
+  -> id_bound:int32
   -> unit
   -> t
 
-val to_repr_list : t -> Int32.t list
+val compile
+  :  ?instructions_for_validation:Instruction.t list
+  -> t
+  -> int32 list Or_error.t
