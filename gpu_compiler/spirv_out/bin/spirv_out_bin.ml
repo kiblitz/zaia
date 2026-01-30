@@ -20,8 +20,10 @@ let output =
   let main file =
     let code =
       let header = Header.create ~id_bound:Int32.zero () in
-      let capabilities = Requirements.Capabilities.create [] in
-      let extensions = Requirements.Extensions.create [] in
+      let capabilities = Requirements.Capabilities.create [ Shader; Matrix; Int64 ] in
+      let extensions =
+        Requirements.Extensions.create [ Spv_khr_storage_buffer_storage_class ]
+      in
       let instructions = [] in
       Code.create instructions ~header ~capabilities ~extensions
     in
