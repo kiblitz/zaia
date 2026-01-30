@@ -36980,4 +36980,35 @@ module Instruction =
       | Reserved t -> Reserved.any_required_capability t
       | Tensor t -> Tensor.any_required_capability t
       | Type_declaration t -> Type_declaration.any_required_capability t
+    let any_required_extension =
+      function
+      | Annotation t -> Annotation.any_required_extension t
+      | Arithmetic t -> Arithmetic.any_required_extension t
+      | Atomic t -> Atomic.any_required_extension t
+      | Barrier t -> Barrier.any_required_extension t
+      | Bit t -> Bit.any_required_extension t
+      | Composite t -> Composite.any_required_extension t
+      | Constant_creation t -> Constant_creation.any_required_extension t
+      | Control_flow t -> Control_flow.any_required_extension t
+      | Conversion t -> Conversion.any_required_extension t
+      | Debug t -> Debug.any_required_extension t
+      | Derivative t -> Derivative.any_required_extension t
+      | Device_side_enqueue t -> Device_side_enqueue.any_required_extension t
+      | Exclude t -> Exclude.any_required_extension t
+      | Extension t -> Extension.any_required_extension t
+      | Function t -> Function.any_required_extension t
+      | Graph t -> Graph.any_required_extension t
+      | Group t -> Group.any_required_extension t
+      | Image t -> Image.any_required_extension t
+      | Memory t -> Memory.any_required_extension t
+      | Miscellaneous t -> Miscellaneous.any_required_extension t
+      | Mode_setting t -> Mode_setting.any_required_extension t
+      | Non_uniform t -> Non_uniform.any_required_extension t
+      | Pipe t -> Pipe.any_required_extension t
+      | Primitive t -> Primitive.any_required_extension t
+      | Relational_and_logical t ->
+          Relational_and_logical.any_required_extension t
+      | Reserved t -> Reserved.any_required_extension t
+      | Tensor t -> Tensor.any_required_extension t
+      | Type_declaration t -> Type_declaration.any_required_extension t
   end
