@@ -106,10 +106,10 @@ module Common = struct
     let type_decl =
       let attr =
         match args_of_branch with
-        | None -> ppx_deriving [ "enumerate" ] |> Some
-        | Some _ -> None
+        | None -> ppx_deriving [ "enumerate" ]
+        | Some _ -> ppx_deriving []
       in
-      type_t (Ppxlib.Ptype_variant constructors) ?attr
+      type_t (Ppxlib.Ptype_variant constructors) ~attr
     in
     Ppxlib.Ast_helper.Str.type_ Ppxlib.Recursive [ type_decl ]
   ;;
