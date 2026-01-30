@@ -807,7 +807,12 @@ module Instructions = struct
           let body = Ppxlib.Ast_helper.Exp.function_ cases in
           [%stri let [%p fn_name] = [%e body]]
         in
-        [ "provisional"; "value"; "any_required_version"; "any_required_capability" ]
+        [ "provisional"
+        ; "value"
+        ; "any_required_version"
+        ; "any_required_capability"
+        ; "any_required_extension"
+        ]
         |> List.map ~f:fn
       in
       let instruction_printing_class_modules =
