@@ -462,13 +462,18 @@ module Operand_kinds = struct
                    ( [%stri type t = string]
                    , [%stri
                        let value t =
-                         let bytes = Bytes.of_string (t ^ "\x00") in
                          let int32_size = 4 in
-                         let output_size =
-                           (Bytes.length bytes + (int32_size - 1)) / int32_size
-                         in
+                         let input_size = String.length t in
+                         let output_size = (input_size / int32_size) + 1 in
+                         let bytes = Bytes.make (output_size * int32_size) '\x00' in
+                         Bytes.blit
+                           ~src:(Bytes.of_string t)
+                           ~src_pos:0
+                           ~dst:bytes
+                           ~dst_pos:0
+                           ~len:input_size;
                          List.init output_size ~f:(fun idx ->
-                           EndianBytes.LittleEndian.get_int32 bytes (idx * 4))
+                           EndianBytes.LittleEndian.get_int32 bytes (idx * int32_size))
                        ;;] )
                  | "Composite", _ ->
                    let type_ =
