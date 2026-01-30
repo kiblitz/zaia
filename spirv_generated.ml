@@ -9676,14 +9676,16 @@ module Operand_kind =
               Some
                 "A null-terminated stream of characters consuming an integral number of words"
             let value t =
-              let output_size =
-                let int32_size = 4 in ((String.length t) / int32_size) + 1 in
-              let bytes = Bytes.make output_size '\000' in
+              let int32_size = 4 in
+              let input_size = String.length t in
+              let output_size = (input_size / int32_size) + 1 in
+              let bytes = Bytes.make (output_size * int32_size) '\000' in
               Bytes.blit ~src:(Bytes.of_string t) ~src_pos:0 ~dst:bytes
-                ~dst_pos:0 ~len:output_size;
+                ~dst_pos:0 ~len:input_size;
               List.init output_size
                 ~f:(fun idx ->
-                      EndianBytes.LittleEndian.get_int32 bytes (idx * 4))
+                      EndianBytes.LittleEndian.get_int32 bytes
+                        (idx * int32_size))
             let any_required_version = []
             let any_required_extension = []
             let any_required_capability = []
