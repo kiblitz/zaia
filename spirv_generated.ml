@@ -11801,7 +11801,8 @@ module Instruction =
           {
           structtype: Operand_kind.Payload.Idref.t ;
           member: Operand_kind.Payload.Literalinteger.t ;
-          decoration: Operand_kind.Payload.Decoration.t } 
+          decoration: Operand_kind.Payload.Decoration.t } [@@deriving
+                                                            compare, sexp_of]
         let provisional =
           function
           | Opdecorate _ -> false
@@ -12218,7 +12219,8 @@ module Instruction =
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
           vector: Operand_kind.Payload.Idref.t ;
-          scalar: Operand_kind.Payload.Idref.t } 
+          scalar: Operand_kind.Payload.Idref.t } [@@deriving
+                                                   compare, sexp_of]
         let provisional =
           function
           | Opcooperativematrixmuladdkhr _ -> false
@@ -13191,7 +13193,7 @@ module Instruction =
           pointer: Operand_kind.Payload.Idref.t ;
           memory: Operand_kind.Payload.Idscope.t ;
           semantics: Operand_kind.Payload.Idmemorysemantics.t ;
-          value: Operand_kind.Payload.Idref.t } 
+          value: Operand_kind.Payload.Idref.t } [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opatomicand _ -> false
@@ -13728,7 +13730,8 @@ module Instruction =
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
-          subgroupcount: Operand_kind.Payload.Idref.t } 
+          subgroupcount: Operand_kind.Payload.Idref.t } [@@deriving
+                                                          compare, sexp_of]
         let provisional =
           function
           | Opcontrolbarrier _ -> false
@@ -13948,7 +13951,7 @@ module Instruction =
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
           base: Operand_kind.Payload.Idref.t ;
-          shift: Operand_kind.Payload.Idref.t } 
+          shift: Operand_kind.Payload.Idref.t } [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opbitcount _ -> false
@@ -14332,7 +14335,8 @@ module Instruction =
           idresult: Operand_kind.Payload.Idresult.t ;
           vector1: Operand_kind.Payload.Idref.t ;
           vector2: Operand_kind.Payload.Idref.t ;
-          components: Operand_kind.Payload.Literalinteger.t list } 
+          components: Operand_kind.Payload.Literalinteger.t list } [@@deriving
+                                                                    compare, sexp_of]
         let provisional =
           function
           | Opcompositeconstruct _ -> false
@@ -14758,7 +14762,8 @@ module Instruction =
           | Opspecconstanttrue of
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
-          idresult: Operand_kind.Payload.Idresult.t } 
+          idresult: Operand_kind.Payload.Idresult.t } [@@deriving
+                                                        compare, sexp_of]
         let provisional =
           function
           | Opconstant _ -> false
@@ -15192,7 +15197,7 @@ module Instruction =
           default: Operand_kind.Payload.Idref.t ;
           target: Operand_kind.Payload.Pairliteralintegeridref.t list } 
           | Opterminateinvocation 
-          | Opunreachable 
+          | Opunreachable [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opbranch _ -> false
@@ -15578,7 +15583,8 @@ module Instruction =
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
-          unsignedvalue: Operand_kind.Payload.Idref.t } 
+          unsignedvalue: Operand_kind.Payload.Idref.t } [@@deriving
+                                                          compare, sexp_of]
         let provisional =
           function
           | Opbitcast _ -> false
@@ -16078,7 +16084,8 @@ module Instruction =
           | Opstring of
           {
           idresult: Operand_kind.Payload.Idresult.t ;
-          string: Operand_kind.Payload.Literalstring.t } 
+          string: Operand_kind.Payload.Literalstring.t } [@@deriving
+                                                           compare, sexp_of]
         let provisional =
           function
           | Opline _ -> false
@@ -16301,7 +16308,7 @@ module Instruction =
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
-          p: Operand_kind.Payload.Idref.t } 
+          p: Operand_kind.Payload.Idref.t } [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opdpdx _ -> false
@@ -16611,7 +16618,8 @@ module Instruction =
           | Opsetusereventstatus of
           {
           event: Operand_kind.Payload.Idref.t ;
-          status: Operand_kind.Payload.Idref.t } 
+          status: Operand_kind.Payload.Idref.t } [@@deriving
+                                                   compare, sexp_of]
         let provisional =
           function
           | Opbuildndrange _ -> false
@@ -18322,7 +18330,8 @@ module Instruction =
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
           packetsize: Operand_kind.Payload.Idref.t ;
-          packetalignment: Operand_kind.Payload.Idref.t } 
+          packetalignment: Operand_kind.Payload.Idref.t } [@@deriving
+                                                            compare, sexp_of]
         let provisional =
           function
           | Opaliasdomaindeclintel _ -> false
@@ -22740,7 +22749,8 @@ module Instruction =
           idresult: Operand_kind.Payload.Idresult.t ;
           set: Operand_kind.Payload.Idref.t ;
           instruction: Operand_kind.Payload.Literalextinstinteger.t ;
-          operand1operand2___: Operand_kind.Payload.Idref.t list } 
+          operand1operand2___: Operand_kind.Payload.Idref.t list } [@@deriving
+                                                                    compare, sexp_of]
         let provisional =
           function
           | Opconditionalextensionintel _ -> true
@@ -22882,7 +22892,8 @@ module Instruction =
           | Opfunctionparameter of
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
-          idresult: Operand_kind.Payload.Idresult.t } 
+          idresult: Operand_kind.Payload.Idresult.t } [@@deriving
+                                                        compare, sexp_of]
         let provisional =
           function
           | Opcooperativematrixperelementopnv _ -> false
@@ -23021,7 +23032,8 @@ module Instruction =
           {
           value: Operand_kind.Payload.Idref.t ;
           outputindex: Operand_kind.Payload.Idref.t ;
-          elementindex: Operand_kind.Payload.Idref.t list } 
+          elementindex: Operand_kind.Payload.Idref.t list } [@@deriving
+                                                              compare, sexp_of]
         let provisional =
           function
           | Opgrapharm _ -> false
@@ -23544,6 +23556,7 @@ module Instruction =
           destinationmemoryoperands:
             Operand_kind.Payload.Memoryaccess.t option ;
           sourcememoryoperands: Operand_kind.Payload.Memoryaccess.t option } 
+        [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opgroupall _ -> false
@@ -25177,7 +25190,8 @@ module Instruction =
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
-          sample: Operand_kind.Payload.Idref.t option } 
+          sample: Operand_kind.Payload.Idref.t option } [@@deriving
+                                                          compare, sexp_of]
         let provisional =
           function
           | Opcolorattachmentreadext _ -> false
@@ -26625,7 +26639,8 @@ module Instruction =
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
-          length: Operand_kind.Payload.Idref.t } 
+          length: Operand_kind.Payload.Idref.t } [@@deriving
+                                                   compare, sexp_of]
         let provisional =
           function
           | Opaccesschain _ -> false
@@ -27495,7 +27510,8 @@ module Instruction =
           | Opundef of
           {
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
-          idresult: Operand_kind.Payload.Idresult.t } 
+          idresult: Operand_kind.Payload.Idresult.t } [@@deriving
+                                                        compare, sexp_of]
         let provisional =
           function
           | Oparithmeticfenceext _ -> false
@@ -27675,7 +27691,8 @@ module Instruction =
           | Opmemorymodel of
           {
           addressingmodel: Operand_kind.Payload.Addressingmodel.t ;
-          memorymodel: Operand_kind.Payload.Memorymodel.t } 
+          memorymodel: Operand_kind.Payload.Memorymodel.t } [@@deriving
+                                                              compare, sexp_of]
         let provisional =
           function
           | Opcapability _ -> false
@@ -28090,7 +28107,8 @@ module Instruction =
           execution: Operand_kind.Payload.Idscope.t ;
           operation: Operand_kind.Payload.Groupoperation.t ;
           value: Operand_kind.Payload.Idref.t ;
-          clustersize: Operand_kind.Payload.Idref.t option } 
+          clustersize: Operand_kind.Payload.Idref.t option } [@@deriving
+                                                               compare, sexp_of]
         let provisional =
           function
           | Opgroupnonuniformall _ -> false
@@ -29181,7 +29199,8 @@ module Instruction =
           pipe: Operand_kind.Payload.Idref.t ;
           pointer: Operand_kind.Payload.Idref.t ;
           packetsize: Operand_kind.Payload.Idref.t ;
-          packetalignment: Operand_kind.Payload.Idref.t } 
+          packetalignment: Operand_kind.Payload.Idref.t } [@@deriving
+                                                            compare, sexp_of]
         let provisional =
           function
           | Opcommitreadpipe _ -> false
@@ -29608,7 +29627,8 @@ module Instruction =
           | Opemitvertex 
           | Opendprimitive 
           | Opendstreamprimitive of {
-          stream: Operand_kind.Payload.Idref.t } 
+          stream: Operand_kind.Payload.Idref.t } [@@deriving
+                                                   compare, sexp_of]
         let provisional =
           function
           | Opemitstreamvertex _ -> false
@@ -29908,7 +29928,7 @@ module Instruction =
           idresulttype: Operand_kind.Payload.Idresulttype.t ;
           idresult: Operand_kind.Payload.Idresult.t ;
           x: Operand_kind.Payload.Idref.t ;
-          y: Operand_kind.Payload.Idref.t } 
+          y: Operand_kind.Payload.Idref.t } [@@deriving compare, sexp_of]
         let provisional =
           function
           | Opall _ -> false
@@ -31805,7 +31825,8 @@ module Instruction =
           | Opwritepackedprimitiveindices4x8nv of
           {
           indexoffset: Operand_kind.Payload.Idref.t ;
-          packedindices: Operand_kind.Payload.Idref.t } 
+          packedindices: Operand_kind.Payload.Idref.t } [@@deriving
+                                                          compare, sexp_of]
         let provisional =
           function
           | Opabsisubintel _ -> false
@@ -35812,6 +35833,7 @@ module Instruction =
           coordinates: Operand_kind.Payload.Idref.t ;
           object_: Operand_kind.Payload.Idref.t ;
           tensoroperands: Operand_kind.Payload.Tensoroperands.t option } 
+        [@@deriving compare, sexp_of]
         let provisional =
           function
           | Optensorquerysizearm _ -> false
@@ -36047,7 +36069,8 @@ module Instruction =
           componenttype: Operand_kind.Payload.Idref.t ;
           componentcount: Operand_kind.Payload.Idref.t } 
           | Optypevoid of {
-          idresult: Operand_kind.Payload.Idresult.t } 
+          idresult: Operand_kind.Payload.Idresult.t } [@@deriving
+                                                        compare, sexp_of]
         let provisional =
           function
           | Optypeaccelerationstructurekhr _ -> false
@@ -36833,7 +36856,7 @@ module Instruction =
       | Relational_and_logical of Relational_and_logical.t 
       | Reserved of Reserved.t 
       | Tensor of Tensor.t 
-      | Type_declaration of Type_declaration.t 
+      | Type_declaration of Type_declaration.t [@@deriving compare, sexp_of]
     let provisional =
       function
       | Annotation t -> Annotation.provisional t
