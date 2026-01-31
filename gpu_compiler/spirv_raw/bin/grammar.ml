@@ -101,6 +101,32 @@ module Operand = struct
   [@@deriving fields ~getters, yojson]
 end
 
+module Nonempty_list = struct
+  include Nonempty_list
+
+  module Option = struct
+    type 'a t = 'a Nonempty_list.t option
+
+    let t_of_yojson a_of_yojson json_field =
+      match json_field with
+      | `Null | `List [] -> None
+      | `List (x :: xs) ->
+        let lst = Nonempty_list.create x xs in
+        Nonempty_list.map lst ~f:a_of_yojson |> Some
+      | json_field ->
+        let json_field = Yojson.Safe.to_string json_field in
+        raise_s [%message "Expected a list" (json_field : string)]
+    ;;
+
+    let yojson_of_t yojson_of_a = function
+      | None -> `Null
+      | Some lst ->
+        let lst = Nonempty_list.map lst ~f:yojson_of_a in
+        `List (Nonempty_list.to_list lst)
+    ;;
+  end
+end
+
 module Instruction = struct
   type t =
     { opname : string
@@ -108,9 +134,9 @@ module Instruction = struct
     ; opcode : int32
     ; version : Version.Option.t [@default None]
     ; operands : Operand.t list [@default []]
-    ; capabilities : string list [@default []]
+    ; capabilities : string Nonempty_list.Option.t [@default None]
     ; last_version : Version.Option.t [@key "lastVersion"] [@default None]
-    ; extensions : string list [@default []]
+    ; extensions : string Nonempty_list.Option.t [@default None]
     ; aliases : string list [@default []]
     ; provisional : bool [@default false]
     }
@@ -122,11 +148,11 @@ module Operand_kind = struct
     type t =
       { enumerant : string
       ; value : Value.t
-      ; capabilities : string list [@default []]
+      ; capabilities : string Nonempty_list.Option.t [@default None]
       ; parameters : Operand.t list [@default []]
       ; version : Version.Option.t [@default None]
       ; aliases : string list [@default []]
-      ; extensions : string list [@default []]
+      ; extensions : string Nonempty_list.Option.t [@default None]
       ; provisional : bool [@default false]
       ; last_version : Version.Option.t [@key "lastVersion"] [@default None]
       }

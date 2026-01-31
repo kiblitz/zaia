@@ -16,6 +16,24 @@ module Common = struct
     loop (Nonempty_list.reverse list)
   ;;
 
+  let payload_longident list =
+    longident_of_list (Nonempty_list.append [ "Operand_kind"; "Payload" ] list)
+  ;;
+
+  let operand_kind_longident (operand : Grammar.Operand.t) subpath =
+    payload_longident (Util.machinize operand.kind :: subpath)
+  ;;
+
+  let record_field_of_operand (operand : Grammar.Operand.t) ~name_cache =
+    let name =
+      Option.value operand.name ~default:operand.kind |> Util.machinize ~lowercase:true
+    in
+    let count =
+      Hashtbl.update_and_return name_cache name ~f:(Option.value ~default:0 >> Int.succ)
+    in
+    if count = 1 then name else [%string "%{name}%{count#Int}"]
+  ;;
+
   let default_derivers = [ "compare"; "sexp_of" ]
 
   let ppx_deriving derivers =
@@ -114,24 +132,59 @@ module Common = struct
     Ppxlib.Ast_helper.Str.type_ Ppxlib.Recursive [ type_decl ]
   ;;
 
-  let any_requirements_fn
+  let record_fields_attribute (operands : Grammar.Operand.t Nonempty_list.t) ~getter_name =
+    let name_cache = String.Table.create () in
+    let record_fields_attribute =
+      let%map.List operand = Nonempty_list.to_list operands in
+      let getter_fn_expr =
+        let expr =
+          operand_kind_longident operand [ getter_name ]
+          |> Longident.flatten
+          |> String.concat ~sep:"."
+        in
+        Ppxlib.Ast_builder.Default.evar expr ~loc
+      in
+      let base_expr =
+        let field = record_field_of_operand operand ~name_cache in
+        Ppxlib.Ast_builder.Default.evar [%string "t.%{field}"] ~loc
+      in
+      match operand.quantifier with
+      | None -> [%expr [ [%e getter_fn_expr] [%e base_expr] ]]
+      | Some Star -> [%expr List.map [%e base_expr] ~f:[%e getter_fn_expr]]
+      | Some Plus ->
+        [%expr
+          [%e base_expr]
+          |> Nonempty_list.map ~f:[%e getter_fn_expr]
+          |> Nonempty_list.to_list]
+      | Some Question ->
+        [%expr [%e base_expr] |> Option.map ~f:[%e getter_fn_expr] |> Option.to_list]
+    in
+    [%expr
+      [%e Ppxlib.Ast_builder.Default.elist record_fields_attribute ~loc] |> List.concat]
+  ;;
+
+  let satisfies_requirements_fn
         ?(requirement_longident : Longident.t option)
-        ?(has_payload = Fn.const false)
-        fn_name
+        ?(payload = Fn.const None)
+        requirement_name
+        ~check_kind
         ~(data_by_name : 'a String.Map.t)
         ~(requirements :
-           [ `Requirements_of_data of 'a -> string list
+           [ `Requirements_of_data of 'a -> string Nonempty_list.t option
            | `Expression_of_data of 'a -> Ppxlib.expression
            ])
     =
-    let cases =
+    let fn_name = [%string "satisfies_%{requirement_name}"] in
+    let no_requirement_cases, with_requirement_cases =
       data_by_name
-      |> Map.mapi ~f:(fun ~key:name ~data ->
-        let extensions =
+      |> Map.partition_mapi ~f:(fun ~key:name ~data ->
+        let payload = payload data in
+        let requirements =
           match requirements with
-          | `Expression_of_data f -> f data
+          | `Expression_of_data f -> f data |> Some
           | `Requirements_of_data f ->
-            (let%map.List requirement = f data in
+            let%map.Option requirements = f data in
+            (let%map.List requirement = Nonempty_list.to_list requirements in
              let txt : Longident.t =
                match requirement_longident with
                | None -> Lident (Util.machinize requirement)
@@ -141,33 +194,83 @@ module Common = struct
              Ppxlib.Ast_helper.Exp.construct { txt; loc } None)
             |> Ppxlib.Ast_builder.Default.elist ~loc
         in
-        let extensions_expr =
-          let set_prefix =
-            match requirement_longident with
-            | Some requirement_longident ->
-              Longident.flatten requirement_longident
-              |> String.concat ~sep:"."
-              |> Fn.flip String.append "."
-            | None -> ""
-          in
-          [%expr
-            [%e extensions]
-            |> [%e
-                 Ppxlib.Ast_builder.Default.evar ~loc [%string "%{set_prefix}Set.of_list"]]]
+        let requirements_expr =
+          match requirements with
+          | None -> [%expr true]
+          | Some requirements ->
+            let requirement_name_expr =
+              Ppxlib.Ast_builder.Default.evar ~loc requirement_name
+            in
+            let instruction_check =
+              let set_prefix =
+                match requirement_longident with
+                | Some requirement_longident ->
+                  Longident.flatten requirement_longident
+                  |> String.concat ~sep:"."
+                  |> Fn.flip String.append "."
+                | None -> ""
+              in
+              let check =
+                match check_kind with
+                | `Set -> [%expr fun set1 set2 -> not (Core.Set.are_disjoint set1 set2)]
+                | `Member -> [%expr Core.Set.mem]
+              in
+              [%expr
+                [%e check]
+                  ([%e requirements]
+                   |> [%e
+                        Ppxlib.Ast_builder.Default.evar
+                          ~loc
+                          [%string "%{set_prefix}Set.of_list"]])
+                  [%e requirement_name_expr]]
+              |> Ppxlib.Ast_helper.Exp.fun_
+                   (Labelled requirement_name)
+                   None
+                   (Ppxlib.Ast_helper.Pat.var { txt = requirement_name; loc })
+            in
+            let satisfies_fns =
+              match payload with
+              | None -> [%expr [ [%e instruction_check] ]]
+              | Some payload ->
+                let satisfies_record_field_requirements =
+                  record_fields_attribute payload ~getter_name:fn_name
+                in
+                [%expr [%e instruction_check] :: [%e satisfies_record_field_requirements]]
+            in
+            [%expr
+              List.for_all [%e satisfies_fns] ~f:(fun fn ->
+                [%e
+                  Ppxlib.Ast_helper.Exp.apply
+                    [%expr fn]
+                    [ Labelled requirement_name, requirement_name_expr ]])]
         in
-        Ppxlib.Ast_helper.Exp.case
-          (Ppxlib.Ast_helper.Pat.construct
-             { txt = Lident name; loc }
-             (if not (has_payload data)
-              then None
-              else Ppxlib.Ast_builder.Default.ppat_any ~loc |> Some))
-          extensions_expr)
-      |> Map.data
+        let branch =
+          Ppxlib.Ast_helper.Exp.case
+            (Ppxlib.Ast_helper.Pat.construct
+               { txt = Lident name; loc }
+               (if Option.is_none payload
+                then None
+                else if Option.is_none requirements
+                then Some [%pat? _]
+                else Some [%pat? t]))
+            requirements_expr
+        in
+        if Option.is_none requirements then First branch else Second branch)
+      |> Tuple2.map ~f:Map.data
     in
     let body =
-      match cases with
-      | [] -> [%expr []]
-      | _ :: _ -> Ppxlib.Ast_helper.Exp.function_ cases
+      let fn ?(alias = requirement_name) expr =
+        Ppxlib.Ast_helper.Exp.fun_
+          (Labelled requirement_name)
+          None
+          (Ppxlib.Ast_helper.Pat.var { txt = alias; loc })
+          expr
+      in
+      match no_requirement_cases @ with_requirement_cases with
+      | [] -> [%expr fun (_ : t) -> [%e fn ~alias:"_" [%expr true]]]
+      | cases ->
+        let alias = if List.is_empty with_requirement_cases then Some "_" else None in
+        [%expr fun t -> [%e fn ?alias (Ppxlib.Ast_helper.Exp.match_ [%expr t] cases)]]
     in
     let fn_name = Ppxlib.Ast_builder.Default.pvar fn_name ~loc in
     [%stri let [%p fn_name] = [%e body]]
@@ -182,30 +285,32 @@ module Common = struct
   module Requirements = struct
     let structure
           ?(capabilities_longident_prefix : Longident.t Option.t)
-          ?has_payload
+          ?payload
           data_by_name
           ~extensions_of_data
           ~capabilities_of_data
           ~version_of_data
           ~last_version_of_data
       =
-      let any_required_extension_fn =
-        any_requirements_fn
-          "any_required_extension"
-          ?has_payload
+      let satisfies_extensions_fn =
+        satisfies_requirements_fn
+          "extensions"
+          ?payload
+          ~check_kind:`Set
           ~requirement_longident:(Ldot (Lident "Requirements", "Extension"))
           ~data_by_name
           ~requirements:(`Requirements_of_data extensions_of_data)
       in
-      let any_required_capability_fn =
-        any_requirements_fn
-          "any_required_capability"
-          ?has_payload
+      let satisfies_capabilities_fn =
+        satisfies_requirements_fn
+          "capabilities"
+          ?payload
+          ~check_kind:`Set
           ?requirement_longident:capabilities_longident_prefix
           ~data_by_name
           ~requirements:(`Requirements_of_data capabilities_of_data)
       in
-      let any_required_version_fn =
+      let satisfies_version_fn =
         let requirements =
           let f data =
             let version_to_expression =
@@ -219,14 +324,15 @@ module Common = struct
           in
           `Expression_of_data f
         in
-        any_requirements_fn
-          "any_required_version"
-          ?has_payload
+        satisfies_requirements_fn
+          "version"
+          ?payload
+          ~check_kind:`Member
           ~requirement_longident:(Ldot (Lident "Requirements", "Version"))
           ~data_by_name
           ~requirements
       in
-      [ any_required_version_fn; any_required_extension_fn; any_required_capability_fn ]
+      [ satisfies_capabilities_fn; satisfies_extensions_fn; satisfies_version_fn ]
     ;;
   end
 end
@@ -243,12 +349,17 @@ module Requirements = struct
     =
     let all =
       let from_instructions =
-        grammar.instructions |> List.concat_map ~f:of_instruction |> Set.of_list module_
+        grammar.instructions
+        |> List.filter_map ~f:of_instruction
+        |> List.concat_map ~f:Nonempty_list.to_list
+        |> Set.of_list module_
       in
       let from_enumerants =
         (let%bind.List operand_kinds = grammar.operand_kinds in
-         let%bind.List enumerant = operand_kinds.enumerants in
+         let%map.List enumerant = operand_kinds.enumerants in
          of_enumerant enumerant)
+        |> List.filter_opt
+        |> List.concat_map ~f:Nonempty_list.to_list
         |> Set.of_list module_
       in
       Set.union from_instructions from_enumerants
@@ -310,8 +421,10 @@ module Requirements = struct
       generate
         ~name:"Version"
         ~module_:(module Grammar.Version)
-        ~of_instruction:(Grammar.Instruction.version >> Option.to_list)
-        ~of_enumerant:(Grammar.Operand_kind.Enumerant.version >> Option.to_list)
+        ~of_instruction:
+          (Grammar.Instruction.version >> Option.map ~f:Nonempty_list.singleton)
+        ~of_enumerant:
+          (Grammar.Operand_kind.Enumerant.version >> Option.map ~f:Nonempty_list.singleton)
         ~m_to_string:Grammar.Version.to_string
         ~extra_body
     ;;
@@ -610,39 +723,20 @@ module Instructions = struct
         String.Map.singleton (Util.machinize instruction.class_) instruction)
       |> Map.transpose_keys (module String)
     in
-    let payload_longident list =
-      Common.longident_of_list (Nonempty_list.append [ "Operand_kind"; "Payload" ] list)
-    in
     let instruction_printing_class_module instruction_printing_class ~instruction_by_name =
-      let has_payload (instruction : Grammar.Instruction.t) =
-        not (List.is_empty instruction.operands)
-      in
-      let record_field_of_operand (operand : Grammar.Operand.t) ~name_cache =
-        let name =
-          Option.value operand.name ~default:operand.kind
-          |> Util.machinize ~lowercase:true
-        in
-        let count =
-          Hashtbl.update_and_return
-            name_cache
-            name
-            ~f:(Option.value ~default:0 >> Int.succ)
-        in
-        if count = 1 then name else [%string "%{name}%{count#Int}"]
-      in
-      let operand_kind_longident (operand : Grammar.Operand.t) subpath =
-        payload_longident (Util.machinize operand.kind :: subpath)
+      let payload (instruction : Grammar.Instruction.t) =
+        Nonempty_list.of_list instruction.operands
       in
       let type_ =
         let args_of_branch (instruction : Grammar.Instruction.t) =
           let record_fields =
             let name_cache = String.Table.create () in
             let%map.List operand = instruction.operands in
-            let name = record_field_of_operand operand ~name_cache in
+            let name = Common.record_field_of_operand operand ~name_cache in
             let type_ =
               let base_type =
                 Ppxlib.Ast_helper.Typ.constr
-                  { txt = operand_kind_longident operand [ "t" ]; loc }
+                  { txt = Common.operand_kind_longident operand [ "t" ]; loc }
                   []
               in
               match operand.quantifier with
@@ -658,7 +752,7 @@ module Instructions = struct
             in
             Ppxlib.Ast_helper.Type.field { txt = name; loc } type_
           in
-          if has_payload instruction
+          if Option.is_some (payload instruction)
           then Ppxlib.Pcstr_record record_fields
           else Ppxlib.Pcstr_tuple []
         in
@@ -674,9 +768,7 @@ module Instructions = struct
             Ppxlib.Ast_helper.Exp.case
               (Ppxlib.Ast_helper.Pat.construct
                  { txt = Lident name; loc }
-                 (if not (has_payload instruction)
-                  then None
-                  else Ppxlib.Ast_builder.Default.ppat_any ~loc |> Some))
+                 (if Option.is_none (payload instruction) then None else Some [%pat? _]))
               [%expr [%e Ppxlib.Ast_builder.Default.ebool instruction.provisional ~loc]])
           |> Map.data
         in
@@ -687,8 +779,8 @@ module Instructions = struct
         let cases =
           instruction_by_name
           |> Map.mapi ~f:(fun ~key:name ~data:instruction ->
-            if not (has_payload instruction)
-            then
+            match payload instruction with
+            | None ->
               Ppxlib.Ast_helper.Exp.case
                 (Ppxlib.Ast_helper.Pat.construct { txt = Lident name; loc } None)
                 [%expr
@@ -699,41 +791,12 @@ module Instructions = struct
                       [%e Ppxlib.Ast_builder.Default.eint32 instruction.opcode ~loc]
                   in
                   [ heading ]]
-            else (
+            | Some payload ->
               let expr =
-                let record_fields =
-                  let name_cache = String.Table.create () in
-                  let%map.List operand = instruction.operands in
-                  let value_fn_expr =
-                    let expr =
-                      operand_kind_longident operand [ "value" ]
-                      |> Longident.flatten
-                      |> String.concat ~sep:"."
-                    in
-                    Ppxlib.Ast_builder.Default.evar expr ~loc
-                  in
-                  let base_expr =
-                    let field = record_field_of_operand operand ~name_cache in
-                    Ppxlib.Ast_builder.Default.evar [%string "t.%{field}"] ~loc
-                  in
-                  match operand.quantifier with
-                  | None -> [%expr [%e value_fn_expr] [%e base_expr]]
-                  | Some Star ->
-                    [%expr List.concat_map [%e base_expr] ~f:[%e value_fn_expr]]
-                  | Some Plus ->
-                    [%expr
-                      [%e base_expr]
-                      |> Nonempty_list.concat_map ~f:[%e value_fn_expr]
-                      |> Nonempty_list.to_list]
-                  | Some Question ->
-                    [%expr
-                      [%e base_expr]
-                      |> Option.map ~f:[%e value_fn_expr]
-                      |> Option.value ~default:[]]
-                in
                 [%expr
                   let payload =
-                    List.concat [%e Ppxlib.Ast_builder.Default.elist record_fields ~loc]
+                    [%e Common.record_fields_attribute payload ~getter_name:"value"]
+                    |> List.concat
                   in
                   let heading =
                     let size =
@@ -748,8 +811,8 @@ module Instructions = struct
               Ppxlib.Ast_helper.Exp.case
                 (Ppxlib.Ast_helper.Pat.construct
                    { txt = Lident name; loc }
-                   (Ppxlib.Ast_helper.Pat.var { txt = "t"; loc } |> Some))
-                expr))
+                   (Some [%pat? t]))
+                expr)
           |> Map.data
         in
         let body = Ppxlib.Ast_helper.Exp.function_ cases in
@@ -758,8 +821,9 @@ module Instructions = struct
       let requirement_fns =
         Common.Requirements.structure
           instruction_by_name
-          ?capabilities_longident_prefix:(payload_longident [ "Capability" ] |> Some)
-          ~has_payload
+          ?capabilities_longident_prefix:
+            (Common.payload_longident [ "Capability" ] |> Some)
+          ~payload
           ~extensions_of_data:Grammar.Instruction.extensions
           ~capabilities_of_data:Grammar.Instruction.capabilities
           ~version_of_data:Grammar.Instruction.version
@@ -789,7 +853,7 @@ module Instructions = struct
           ~name_of_branch:Fn.id
       in
       let fns =
-        let fn fn_name =
+        let fn ?labelled_arg fn_name =
           let cases =
             instruction_by_name_by_class
             |> Map.mapi ~f:(fun ~key:class_ ~data:_ ->
@@ -799,26 +863,42 @@ module Instructions = struct
                   |> Longident.flatten
                   |> String.concat ~sep:"."
                 in
-                [%expr [%e Ppxlib.Ast_builder.Default.evar expr ~loc] t]
+                let args =
+                  let%map.List arg = Option.to_list labelled_arg in
+                  Ppxlib.Labelled arg, Ppxlib.Ast_builder.Default.evar arg ~loc
+                in
+                Ppxlib.Ast_helper.Exp.apply
+                  [%expr [%e Ppxlib.Ast_builder.Default.evar expr ~loc] t]
+                  args
               in
               Ppxlib.Ast_helper.Exp.case
                 (Ppxlib.Ast_helper.Pat.construct
                    { txt = Lident class_; loc }
-                   (Ppxlib.Ast_helper.Pat.var { txt = "t"; loc } |> Some))
+                   (Some [%pat? t]))
                 [%expr [%e value_fn_expr]])
             |> Map.data
           in
           let fn_name = Ppxlib.Ast_builder.Default.pvar fn_name ~loc in
-          let body = Ppxlib.Ast_helper.Exp.function_ cases in
+          let body =
+            let fn =
+              match labelled_arg with
+              | None -> Fn.id
+              | Some labelled_arg ->
+                Ppxlib.Ast_helper.Exp.fun_
+                  (Labelled labelled_arg)
+                  None
+                  (Ppxlib.Ast_helper.Pat.var { txt = labelled_arg; loc })
+            in
+            [%expr fun t -> [%e fn (Ppxlib.Ast_helper.Exp.match_ [%expr t] cases)]]
+          in
           [%stri let [%p fn_name] = [%e body]]
         in
-        [ "provisional"
-        ; "value"
-        ; "any_required_version"
-        ; "any_required_capability"
-        ; "any_required_extension"
+        [ fn "provisional"
+        ; fn "value"
+        ; fn "satisfies_version" ~labelled_arg:"version"
+        ; fn "satisfies_capabilities" ~labelled_arg:"capabilities"
+        ; fn "satisfies_extensions" ~labelled_arg:"extensions"
         ]
-        |> List.map ~f:fn
       in
       let instruction_printing_class_modules =
         instruction_by_name_by_class
