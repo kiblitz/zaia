@@ -30,15 +30,14 @@ let compile
     | None -> Ok ()
     | Some (instructions : Instruction.t list) ->
       (let%map.List instruction = instructions in
-       let required = Instruction.any_required_version instruction in
-       if Set.mem required spirv_version
+       if Instruction.satisfies_version instruction ~version:spirv_version
        then Ok ()
        else
          Or_error.error_s
            [%message
              "Incompatible version"
-               (instruction : Instruction.t)
-               (required : Version.Set.t)])
+               (spirv_version : Version.t)
+               (instruction : Instruction.t)])
       |> Or_error.all_unit
       |> Or_error.tag_s ~tag:[%message (spirv_version : Version.t)]
   in

@@ -52,9 +52,9 @@ module Instruction : sig
     ; opcode : int32
     ; version : Version.Option.t
     ; operands : Operand.t list
-    ; capabilities : string list
+    ; capabilities : string Nonempty_list.t option
     ; last_version : Version.Option.t
-    ; extensions : string list
+    ; extensions : string Nonempty_list.t option
     ; aliases : string list
     ; provisional : bool
     }
@@ -66,11 +66,11 @@ module Operand_kind : sig
     type t =
       { enumerant : string
       ; value : Value.t
-      ; capabilities : string list
+      ; capabilities : string Nonempty_list.t option
       ; parameters : Operand.t list
       ; version : Version.Option.t
       ; aliases : string list
-      ; extensions : string list
+      ; extensions : string Nonempty_list.t option
       ; provisional : bool
       ; last_version : Version.Option.t
       }

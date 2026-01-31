@@ -12,16 +12,12 @@ module Capabilities = struct
       | None -> Ok ()
       | Some (instructions : Instruction.t list) ->
         (let%map.List instruction = instructions in
-         let required = Instruction.any_required_capability instruction in
-         if Set.are_disjoint t required
+         if Instruction.satisfies_capabilities instruction ~capabilities:t
          then Ok ()
-         else (
-           let missing = Set.diff required t in
+         else
            Or_error.error_s
              [%message
-               "Missing capability"
-                 (instruction : Instruction.t)
-                 (missing : Capability.Set.t)]))
+               "Missing capability" (t : Capability.Set.t) (instruction : Instruction.t)])
         |> Or_error.all_unit
         |> Or_error.tag_s ~tag:[%message (t : t)]
     in
@@ -42,16 +38,12 @@ module Extensions = struct
       | None -> Ok ()
       | Some (instructions : Instruction.t list) ->
         (let%map.List instruction = instructions in
-         let required = Instruction.any_required_extension instruction in
-         if Set.are_disjoint t required
+         if Instruction.satisfies_extensions instruction ~extensions:t
          then Ok ()
-         else (
-           let missing = Set.diff required t in
+         else
            Or_error.error_s
              [%message
-               "Missing extension"
-                 (instruction : Instruction.t)
-                 (missing : Extension.Set.t)]))
+               "Missing extension" (t : Extension.Set.t) (instruction : Instruction.t)])
         |> Or_error.all_unit
         |> Or_error.tag_s ~tag:[%message (t : t)]
     in
