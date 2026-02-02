@@ -28,16 +28,16 @@ let compile
   let validate =
     match instructions_for_validation with
     | None -> Ok ()
-    | Some (instructions : Instruction.t list) ->
+    | Some (instructions : Spirv_instruction.t list) ->
       (let%map.List instruction = instructions in
-       if Instruction.satisfies_version instruction ~version:spirv_version
+       if Spirv_instruction.satisfies_version instruction ~version:spirv_version
        then Ok ()
        else
          Or_error.error_s
            [%message
              "Incompatible version"
                (spirv_version : Version.t)
-               (instruction : Instruction.t)])
+               (instruction : Spirv_instruction.t)])
       |> Or_error.all_unit
       |> Or_error.tag_s ~tag:[%message (spirv_version : Version.t)]
   in

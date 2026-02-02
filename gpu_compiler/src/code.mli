@@ -4,7 +4,7 @@ open! Import
 type t
 
 val create
-  :  Instruction.t list
+  :  Instruction.List.t
   -> header:Header.t
   -> capabilities:Requirements.Capabilities.t
   -> extensions:Requirements.Extensions.t

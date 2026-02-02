@@ -11,6 +11,6 @@ val create
   -> t
 
 val compile
-  :  ?instructions_for_validation:Instruction.t list
+  :  ?instructions_for_validation:Spirv_instruction.t list
   -> t
   -> int32 list Or_error.t

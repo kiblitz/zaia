@@ -8,7 +8,6 @@ include struct
   module Capability = Spirv_generated.Operand_kind.Payload.Capability
 
   include struct
-    open Spirv_generated
-    module Instruction = Instruction
+    module Spirv_instruction = Spirv_generated.Instruction
   end
 end

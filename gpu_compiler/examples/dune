@@ -1,0 +1,8 @@
+(library
+ (name gpu_compiler_examples)
+ (public_name zaia.gpu_compiler.examples)
+ (inline_tests
+  (modes native))
+ (libraries core gpu_compiler)
+ (preprocess
+  (pps ppx_expect ppx_jane)))

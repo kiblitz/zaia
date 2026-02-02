@@ -1,5 +1,10 @@
 (executable
  (name spirv_out_bin)
- (libraries gpu_compiler cmdliner core core_kernel.binary_packing)
+ (libraries
+  gpu_compiler
+  gpu_compiler_examples
+  cmdliner
+  core
+  core_kernel.binary_packing)
  (preprocess
   (pps ppx_expect ppx_jane)))

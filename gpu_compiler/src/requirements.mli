@@ -7,7 +7,7 @@ module Capabilities : sig
   val create : Capability.t list -> t
 
   val compile
-    :  ?instructions_for_validation:Instruction.t list
+    :  ?instructions_for_validation:Spirv_instruction.t list
     -> t
     -> int32 list Or_error.t
 end
@@ -18,7 +18,7 @@ module Extensions : sig
   val create : Extension.t list -> t
 
   val compile
-    :  ?instructions_for_validation:Instruction.t list
+    :  ?instructions_for_validation:Spirv_instruction.t list
     -> t
     -> int32 list Or_error.t
 end
