@@ -489,68 +489,6 @@ module Requirements =
           | Spv_qcom_tile_shading -> "SPV_QCOM_tile_shading"
       end
   end
-module Instruction_printing_class =
-  struct
-    type t =
-      | Annotation 
-      | Arithmetic 
-      | Atomic 
-      | Barrier 
-      | Bit 
-      | Composite 
-      | Constant_creation 
-      | Control_flow 
-      | Conversion 
-      | Debug 
-      | Derivative 
-      | Device_side_enqueue 
-      | Exclude 
-      | Extension 
-      | Function 
-      | Graph 
-      | Group 
-      | Image 
-      | Memory 
-      | Miscellaneous 
-      | Mode_setting 
-      | Non_uniform 
-      | Pipe 
-      | Primitive 
-      | Relational_and_logical 
-      | Reserved 
-      | Tensor 
-      | Type_declaration [@@deriving compare, sexp_of, enumerate]
-    let heading =
-      function
-      | Annotation -> Some "Annotation Instructions"
-      | Arithmetic -> Some "Arithmetic Instructions"
-      | Atomic -> Some "Atomic Instructions"
-      | Barrier -> Some "Barrier Instructions"
-      | Bit -> Some "Bit Instructions"
-      | Composite -> Some "Composite Instructions"
-      | Constant_creation -> Some "Constant-Creation Instructions"
-      | Control_flow -> Some "Control-Flow Instructions"
-      | Conversion -> Some "Conversion Instructions"
-      | Debug -> Some "Debug Instructions"
-      | Derivative -> Some "Derivative Instructions"
-      | Device_side_enqueue -> Some "Device-Side Enqueue Instructions"
-      | Exclude -> None
-      | Extension -> Some "Extension Instructions"
-      | Function -> Some "Function Instructions"
-      | Graph -> Some "Graph Instructions"
-      | Group -> Some "Group and Subgroup Instructions"
-      | Image -> Some "Image Instructions"
-      | Memory -> Some "Memory Instructions"
-      | Miscellaneous -> Some "Miscellaneous Instructions"
-      | Mode_setting -> Some "Mode-Setting Instructions"
-      | Non_uniform -> Some "Non-Uniform Instructions"
-      | Pipe -> Some "Pipe Instructions"
-      | Primitive -> Some "Primitive Instructions"
-      | Relational_and_logical -> Some "Relational and Logical Instructions"
-      | Reserved -> Some "Reserved Instructions"
-      | Tensor -> Some "Tensor Instructions"
-      | Type_declaration -> Some "Type-Declaration Instructions"
-  end
 module Operand_kind =
   struct
     module Category =
@@ -65563,6 +65501,37 @@ module Instruction =
       | Reserved of Reserved.t 
       | Tensor of Tensor.t 
       | Type_declaration of Type_declaration.t [@@deriving compare, sexp_of]
+    let heading =
+      function
+      | Annotation _ -> Some "Annotation Instructions"
+      | Arithmetic _ -> Some "Arithmetic Instructions"
+      | Atomic _ -> Some "Atomic Instructions"
+      | Barrier _ -> Some "Barrier Instructions"
+      | Bit _ -> Some "Bit Instructions"
+      | Composite _ -> Some "Composite Instructions"
+      | Constant_creation _ -> Some "Constant-Creation Instructions"
+      | Control_flow _ -> Some "Control-Flow Instructions"
+      | Conversion _ -> Some "Conversion Instructions"
+      | Debug _ -> Some "Debug Instructions"
+      | Derivative _ -> Some "Derivative Instructions"
+      | Device_side_enqueue _ -> Some "Device-Side Enqueue Instructions"
+      | Exclude _ -> None
+      | Extension _ -> Some "Extension Instructions"
+      | Function _ -> Some "Function Instructions"
+      | Graph _ -> Some "Graph Instructions"
+      | Group _ -> Some "Group and Subgroup Instructions"
+      | Image _ -> Some "Image Instructions"
+      | Memory _ -> Some "Memory Instructions"
+      | Miscellaneous _ -> Some "Miscellaneous Instructions"
+      | Mode_setting _ -> Some "Mode-Setting Instructions"
+      | Non_uniform _ -> Some "Non-Uniform Instructions"
+      | Pipe _ -> Some "Pipe Instructions"
+      | Primitive _ -> Some "Primitive Instructions"
+      | Relational_and_logical _ ->
+          Some "Relational and Logical Instructions"
+      | Reserved _ -> Some "Reserved Instructions"
+      | Tensor _ -> Some "Tensor Instructions"
+      | Type_declaration _ -> Some "Type-Declaration Instructions"
     let provisional t =
       match t with
       | Annotation t -> (Annotation.provisional t) 
