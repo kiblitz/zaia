@@ -3,8 +3,10 @@ open! Core
 let machinize ?(lowercase = false) s =
   let s =
     s
+    |> String.substr_replace_all ~pattern:"..." ~with_:""
     |> String.substr_replace_all ~pattern:"." ~with_:"_"
     |> String.substr_replace_all ~pattern:"-" ~with_:"_"
+    |> String.substr_replace_all ~pattern:" " ~with_:"_"
     |> String.filter ~f:(fun c -> Char.is_alphanum c || [%equal: char] c '_')
     |> String.lowercase
   in

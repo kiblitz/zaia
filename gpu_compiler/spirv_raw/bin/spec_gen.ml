@@ -133,6 +133,9 @@ module Common = struct
   ;;
 
   let record_fields_attribute (operands : Grammar.Operand.t Nonempty_list.t) ~getter_name =
+    let has_quantifier =
+      Nonempty_list.exists operands ~f:(Grammar.Operand.quantifier >> Option.is_some)
+    in
     let name_cache = String.Table.create () in
     let record_fields_attribute =
       let%map.List operand = Nonempty_list.to_list operands in
@@ -149,7 +152,9 @@ module Common = struct
         Ppxlib.Ast_builder.Default.evar [%string "t.%{field}"] ~loc
       in
       match operand.quantifier with
-      | None -> [%expr [ [%e getter_fn_expr] [%e base_expr] ]]
+      | None ->
+        let base = [%expr [%e getter_fn_expr] [%e base_expr]] in
+        if has_quantifier then [%expr [ [%e base] ]] else base
       | Some Star -> [%expr List.map [%e base_expr] ~f:[%e getter_fn_expr]]
       | Some Plus ->
         [%expr
@@ -159,8 +164,8 @@ module Common = struct
       | Some Question ->
         [%expr [%e base_expr] |> Option.map ~f:[%e getter_fn_expr] |> Option.to_list]
     in
-    [%expr
-      [%e Ppxlib.Ast_builder.Default.elist record_fields_attribute ~loc] |> List.concat]
+    let base = Ppxlib.Ast_builder.Default.elist record_fields_attribute ~loc in
+    if has_quantifier then [%expr List.concat [%e base]] else base
   ;;
 
   let satisfies_requirements_fn
@@ -599,6 +604,33 @@ module Operand_kinds = struct
                 |> Tuple2.map_fst
                      ~f:(Common.type_with_attr_exn ~attr:(Common.ppx_deriving []))
             in
+            let max_id_fn =
+              match operand_kind.category with
+              | "Id" -> [%stri let max_id t = Some t]
+              | "Composite" ->
+                let var_name i = [%string "t%{i#Int}"] in
+                let tuple =
+                  Ppxlib.Ast_helper.Pat.tuple
+                    (List.mapi operand_kind.bases ~f:(fun i (_ : string) ->
+                       Ppxlib.Ast_helper.Pat.var { txt = var_name i; loc }))
+                in
+                let body =
+                  List.mapi operand_kind.bases ~f:(fun i base ->
+                    let base = Util.machinize base in
+                    let fn =
+                      Ppxlib.Ast_builder.Default.evar [%string "%{base}.max_id"] ~loc
+                    in
+                    let var_name = Ppxlib.Ast_builder.Default.evar (var_name i) ~loc in
+                    [%expr [%e fn] [%e var_name]])
+                in
+                [%stri
+                  let max_id [%p tuple] =
+                    [%e Ppxlib.Ast_builder.Default.elist body ~loc]
+                    |> List.filter_opt
+                    |> List.max_elt ~compare:[%compare: int32]
+                  ;;]
+              | _ -> [%stri let max_id (_ : t) : int32 option = None]
+            in
             let category_const =
               let value =
                 Ppxlib.Ast_helper.Exp.construct
@@ -628,7 +660,7 @@ module Operand_kinds = struct
                 ~last_version_of_data:Grammar.Operand_kind.Enumerant.last_version
             in
             let module_body =
-              [ category_const; doc_const; opcode_fn ] @ requirement_fns
+              [ category_const; doc_const; opcode_fn; max_id_fn ] @ requirement_fns
             in
             let module_ body =
               let module_expr = Ppxlib.Ast_helper.Mod.structure (type_ :: body) in
@@ -791,6 +823,28 @@ module Instructions = struct
         let body = Ppxlib.Ast_helper.Exp.function_ cases in
         [%stri let value = [%e body]]
       in
+      let max_id_fn =
+        let cases =
+          instruction_by_name
+          |> Map.mapi ~f:(fun ~key:name ~data:instruction ->
+            match payload instruction with
+            | None ->
+              Ppxlib.Ast_helper.Exp.case
+                (Ppxlib.Ast_helper.Pat.construct { txt = Lident name; loc } None)
+                [%expr None]
+            | Some operands ->
+              let ids = Common.record_fields_attribute operands ~getter_name:"max_id" in
+              Ppxlib.Ast_helper.Exp.case
+                (Ppxlib.Ast_helper.Pat.construct
+                   { txt = Lident name; loc }
+                   (Some [%pat? t]))
+                [%expr
+                  [%e ids] |> List.filter_opt |> List.max_elt ~compare:[%compare: int32]])
+          |> Map.data
+        in
+        let body = Ppxlib.Ast_helper.Exp.function_ cases in
+        [%stri let max_id = [%e body]]
+      in
       let requirement_fns =
         Common.Requirements.structure
           instruction_by_name
@@ -804,7 +858,7 @@ module Instructions = struct
       in
       let module_expr =
         Ppxlib.Ast_helper.Mod.structure
-          ([ type_; provisional_fn; opcode_fn ] @ requirement_fns)
+          ([ type_; provisional_fn; opcode_fn; max_id_fn ] @ requirement_fns)
       in
       Ppxlib.Ast_helper.Str.module_
         (Ppxlib.Ast_helper.Mb.mk
@@ -885,6 +939,7 @@ module Instructions = struct
         [ heading_fn
         ; fn "provisional"
         ; fn "value"
+        ; fn "max_id"
         ; fn "satisfies_version" ~labelled_arg:"version"
         ; fn "satisfies_capabilities" ~labelled_arg:"capabilities"
         ; fn "satisfies_extensions" ~labelled_arg:"extensions"

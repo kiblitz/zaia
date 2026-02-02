@@ -3,14 +3,10 @@ open! Import
 
 type t
 
-val create
-  :  ?generator_id:int32
-  -> ?spirv_version:Version.t
-  -> id_bound:int32
-  -> unit
-  -> t
+val create : ?generator_id:int32 -> ?spirv_version:Version.t -> unit -> t
 
 val compile
-  :  ?instructions_for_validation:Spirv_instruction.t list
+  :  ?validate_requirements:bool
   -> t
+  -> instructions:Spirv_instruction.t list
   -> int32 list Or_error.t

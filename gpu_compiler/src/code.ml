@@ -14,7 +14,7 @@ let create instructions ~header ~capabilities ~extensions =
 
 let compile { header; capabilities; extensions; instructions } =
   let spirv_instructions = Instruction.List.compile_to_spirv instructions in
-  [ Header.compile ~instructions_for_validation:spirv_instructions header
+  [ Header.compile ~validate_requirements:true header ~instructions:spirv_instructions
   ; Requirements.Capabilities.compile
       ~instructions_for_validation:spirv_instructions
       capabilities
