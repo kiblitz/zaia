@@ -466,38 +466,6 @@ module Requirements = struct
   ;;
 end
 
-module Instruction_printing_class = struct
-  let generate (grammar : Grammar.t) =
-    let%map.Or_error heading_by_instruction_printing_class_tag =
-      grammar.instruction_printing_class
-      |> String.Map.of_list_with_key_or_error
-           ~get_key:(Grammar.Instruction_printing_class.tag >> Util.machinize)
-      |> Or_error.map ~f:(Map.map ~f:Grammar.Instruction_printing_class.heading)
-    in
-    let type_ =
-      Common.enum_t
-        (Map.keys heading_by_instruction_printing_class_tag)
-        ~name_of_branch:Fn.id
-    in
-    let heading_fn =
-      let cases =
-        heading_by_instruction_printing_class_tag
-        |> Map.mapi ~f:(fun ~key:tag ~data:heading ->
-          Ppxlib.Ast_helper.Exp.case
-            (Ppxlib.Ast_helper.Pat.construct { txt = Lident tag; loc } None)
-            (Common.option_to_expression
-               heading
-               ~expr_maker:Ppxlib.Ast_builder.Default.estring))
-        |> Map.data
-      in
-      let body = Ppxlib.Ast_helper.Exp.function_ cases in
-      [%stri let heading = [%e body]]
-    in
-    let module_expr = Ppxlib.Ast_helper.Mod.structure [ type_; heading_fn ] in
-    [%stri module Instruction_printing_class = [%m module_expr]]
-  ;;
-end
-
 module Operand_kinds = struct
   module Payload = struct
     let generate (grammar : Grammar.t) =
@@ -722,6 +690,11 @@ module Instructions = struct
       |> Map.map ~f:(fun instruction ->
         String.Map.singleton (Util.machinize instruction.class_) instruction)
       |> Map.transpose_keys (module String)
+    and heading_by_instruction_printing_class_tag =
+      grammar.instruction_printing_class
+      |> String.Map.of_list_with_key_or_error
+           ~get_key:(Grammar.Instruction_printing_class.tag >> Util.machinize)
+      |> Or_error.map ~f:(Map.map ~f:Grammar.Instruction_printing_class.heading)
     in
     let instruction_printing_class_module instruction_printing_class ~instruction_by_name =
       let payload (instruction : Grammar.Instruction.t) =
@@ -853,6 +826,22 @@ module Instructions = struct
           ~name_of_branch:Fn.id
       in
       let fns =
+        let heading_fn =
+          let cases =
+            heading_by_instruction_printing_class_tag
+            |> Map.mapi ~f:(fun ~key:instruction_printing_class_tag ~data:heading ->
+              Ppxlib.Ast_helper.Exp.case
+                (Ppxlib.Ast_helper.Pat.construct
+                   { txt = Lident instruction_printing_class_tag; loc }
+                   (Some [%pat? _]))
+                (Common.option_to_expression
+                   heading
+                   ~expr_maker:Ppxlib.Ast_builder.Default.estring))
+            |> Map.data
+          in
+          let body = Ppxlib.Ast_helper.Exp.function_ cases in
+          [%stri let heading = [%e body]]
+        in
         let fn ?labelled_arg fn_name =
           let cases =
             instruction_by_name_by_class
@@ -893,7 +882,8 @@ module Instructions = struct
           in
           [%stri let [%p fn_name] = [%e body]]
         in
-        [ fn "provisional"
+        [ heading_fn
+        ; fn "provisional"
         ; fn "value"
         ; fn "satisfies_version" ~labelled_arg:"version"
         ; fn "satisfies_capabilities" ~labelled_arg:"capabilities"
@@ -916,18 +906,9 @@ end
 
 let generate (grammar : Grammar.t) =
   let requirements = Requirements.generate grammar in
-  let%bind.Or_error instruction_printing_class =
-    Instruction_printing_class.generate grammar
-  and operand_kinds = Operand_kinds.generate grammar
+  let%bind.Or_error operand_kinds = Operand_kinds.generate grammar
   and instructions = Instructions.generate grammar in
   let unused_warning = [%stri [@@@warning "-32"]] in
   let open_core = [%stri open Core] in
-  Ok
-    [ unused_warning
-    ; open_core
-    ; requirements
-    ; instruction_printing_class
-    ; operand_kinds
-    ; instructions
-    ]
+  Ok [ unused_warning; open_core; requirements; operand_kinds; instructions ]
 ;;
