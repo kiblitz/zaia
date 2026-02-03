@@ -70919,196 +70919,193 @@ module Instruction =
       | Type_declaration _ -> Some "Type-Declaration Instructions"
     let provisional t =
       match t with
-      | Annotation t -> (Annotation.provisional t) 
-      | Arithmetic t -> (Arithmetic.provisional t) 
-      | Atomic t -> (Atomic.provisional t) 
-      | Barrier t -> (Barrier.provisional t) 
-      | Bit t -> (Bit.provisional t) 
-      | Composite t -> (Composite.provisional t) 
-      | Constant_creation t -> (Constant_creation.provisional t) 
-      | Control_flow t -> (Control_flow.provisional t) 
-      | Conversion t -> (Conversion.provisional t) 
-      | Debug t -> (Debug.provisional t) 
-      | Derivative t -> (Derivative.provisional t) 
-      | Device_side_enqueue t -> (Device_side_enqueue.provisional t) 
-      | Exclude t -> (Exclude.provisional t) 
-      | Extension t -> (Extension.provisional t) 
-      | Function t -> (Function.provisional t) 
-      | Graph t -> (Graph.provisional t) 
-      | Group t -> (Group.provisional t) 
-      | Image t -> (Image.provisional t) 
-      | Memory t -> (Memory.provisional t) 
-      | Miscellaneous t -> (Miscellaneous.provisional t) 
-      | Mode_setting t -> (Mode_setting.provisional t) 
-      | Non_uniform t -> (Non_uniform.provisional t) 
-      | Pipe t -> (Pipe.provisional t) 
-      | Primitive t -> (Primitive.provisional t) 
-      | Relational_and_logical t -> (Relational_and_logical.provisional t) 
-      | Reserved t -> (Reserved.provisional t) 
-      | Tensor t -> (Tensor.provisional t) 
-      | Type_declaration t -> (Type_declaration.provisional t) 
+      | Annotation t -> Annotation.provisional t
+      | Arithmetic t -> Arithmetic.provisional t
+      | Atomic t -> Atomic.provisional t
+      | Barrier t -> Barrier.provisional t
+      | Bit t -> Bit.provisional t
+      | Composite t -> Composite.provisional t
+      | Constant_creation t -> Constant_creation.provisional t
+      | Control_flow t -> Control_flow.provisional t
+      | Conversion t -> Conversion.provisional t
+      | Debug t -> Debug.provisional t
+      | Derivative t -> Derivative.provisional t
+      | Device_side_enqueue t -> Device_side_enqueue.provisional t
+      | Exclude t -> Exclude.provisional t
+      | Extension t -> Extension.provisional t
+      | Function t -> Function.provisional t
+      | Graph t -> Graph.provisional t
+      | Group t -> Group.provisional t
+      | Image t -> Image.provisional t
+      | Memory t -> Memory.provisional t
+      | Miscellaneous t -> Miscellaneous.provisional t
+      | Mode_setting t -> Mode_setting.provisional t
+      | Non_uniform t -> Non_uniform.provisional t
+      | Pipe t -> Pipe.provisional t
+      | Primitive t -> Primitive.provisional t
+      | Relational_and_logical t -> Relational_and_logical.provisional t
+      | Reserved t -> Reserved.provisional t
+      | Tensor t -> Tensor.provisional t
+      | Type_declaration t -> Type_declaration.provisional t
     let value t =
       match t with
-      | Annotation t -> (Annotation.value t) 
-      | Arithmetic t -> (Arithmetic.value t) 
-      | Atomic t -> (Atomic.value t) 
-      | Barrier t -> (Barrier.value t) 
-      | Bit t -> (Bit.value t) 
-      | Composite t -> (Composite.value t) 
-      | Constant_creation t -> (Constant_creation.value t) 
-      | Control_flow t -> (Control_flow.value t) 
-      | Conversion t -> (Conversion.value t) 
-      | Debug t -> (Debug.value t) 
-      | Derivative t -> (Derivative.value t) 
-      | Device_side_enqueue t -> (Device_side_enqueue.value t) 
-      | Exclude t -> (Exclude.value t) 
-      | Extension t -> (Extension.value t) 
-      | Function t -> (Function.value t) 
-      | Graph t -> (Graph.value t) 
-      | Group t -> (Group.value t) 
-      | Image t -> (Image.value t) 
-      | Memory t -> (Memory.value t) 
-      | Miscellaneous t -> (Miscellaneous.value t) 
-      | Mode_setting t -> (Mode_setting.value t) 
-      | Non_uniform t -> (Non_uniform.value t) 
-      | Pipe t -> (Pipe.value t) 
-      | Primitive t -> (Primitive.value t) 
-      | Relational_and_logical t -> (Relational_and_logical.value t) 
-      | Reserved t -> (Reserved.value t) 
-      | Tensor t -> (Tensor.value t) 
-      | Type_declaration t -> (Type_declaration.value t) 
+      | Annotation t -> Annotation.value t
+      | Arithmetic t -> Arithmetic.value t
+      | Atomic t -> Atomic.value t
+      | Barrier t -> Barrier.value t
+      | Bit t -> Bit.value t
+      | Composite t -> Composite.value t
+      | Constant_creation t -> Constant_creation.value t
+      | Control_flow t -> Control_flow.value t
+      | Conversion t -> Conversion.value t
+      | Debug t -> Debug.value t
+      | Derivative t -> Derivative.value t
+      | Device_side_enqueue t -> Device_side_enqueue.value t
+      | Exclude t -> Exclude.value t
+      | Extension t -> Extension.value t
+      | Function t -> Function.value t
+      | Graph t -> Graph.value t
+      | Group t -> Group.value t
+      | Image t -> Image.value t
+      | Memory t -> Memory.value t
+      | Miscellaneous t -> Miscellaneous.value t
+      | Mode_setting t -> Mode_setting.value t
+      | Non_uniform t -> Non_uniform.value t
+      | Pipe t -> Pipe.value t
+      | Primitive t -> Primitive.value t
+      | Relational_and_logical t -> Relational_and_logical.value t
+      | Reserved t -> Reserved.value t
+      | Tensor t -> Tensor.value t
+      | Type_declaration t -> Type_declaration.value t
     let max_id t =
       match t with
-      | Annotation t -> (Annotation.max_id t) 
-      | Arithmetic t -> (Arithmetic.max_id t) 
-      | Atomic t -> (Atomic.max_id t) 
-      | Barrier t -> (Barrier.max_id t) 
-      | Bit t -> (Bit.max_id t) 
-      | Composite t -> (Composite.max_id t) 
-      | Constant_creation t -> (Constant_creation.max_id t) 
-      | Control_flow t -> (Control_flow.max_id t) 
-      | Conversion t -> (Conversion.max_id t) 
-      | Debug t -> (Debug.max_id t) 
-      | Derivative t -> (Derivative.max_id t) 
-      | Device_side_enqueue t -> (Device_side_enqueue.max_id t) 
-      | Exclude t -> (Exclude.max_id t) 
-      | Extension t -> (Extension.max_id t) 
-      | Function t -> (Function.max_id t) 
-      | Graph t -> (Graph.max_id t) 
-      | Group t -> (Group.max_id t) 
-      | Image t -> (Image.max_id t) 
-      | Memory t -> (Memory.max_id t) 
-      | Miscellaneous t -> (Miscellaneous.max_id t) 
-      | Mode_setting t -> (Mode_setting.max_id t) 
-      | Non_uniform t -> (Non_uniform.max_id t) 
-      | Pipe t -> (Pipe.max_id t) 
-      | Primitive t -> (Primitive.max_id t) 
-      | Relational_and_logical t -> (Relational_and_logical.max_id t) 
-      | Reserved t -> (Reserved.max_id t) 
-      | Tensor t -> (Tensor.max_id t) 
-      | Type_declaration t -> (Type_declaration.max_id t) 
+      | Annotation t -> Annotation.max_id t
+      | Arithmetic t -> Arithmetic.max_id t
+      | Atomic t -> Atomic.max_id t
+      | Barrier t -> Barrier.max_id t
+      | Bit t -> Bit.max_id t
+      | Composite t -> Composite.max_id t
+      | Constant_creation t -> Constant_creation.max_id t
+      | Control_flow t -> Control_flow.max_id t
+      | Conversion t -> Conversion.max_id t
+      | Debug t -> Debug.max_id t
+      | Derivative t -> Derivative.max_id t
+      | Device_side_enqueue t -> Device_side_enqueue.max_id t
+      | Exclude t -> Exclude.max_id t
+      | Extension t -> Extension.max_id t
+      | Function t -> Function.max_id t
+      | Graph t -> Graph.max_id t
+      | Group t -> Group.max_id t
+      | Image t -> Image.max_id t
+      | Memory t -> Memory.max_id t
+      | Miscellaneous t -> Miscellaneous.max_id t
+      | Mode_setting t -> Mode_setting.max_id t
+      | Non_uniform t -> Non_uniform.max_id t
+      | Pipe t -> Pipe.max_id t
+      | Primitive t -> Primitive.max_id t
+      | Relational_and_logical t -> Relational_and_logical.max_id t
+      | Reserved t -> Reserved.max_id t
+      | Tensor t -> Tensor.max_id t
+      | Type_declaration t -> Type_declaration.max_id t
     let satisfies_version t ~version =
       match t with
-      | Annotation t -> (Annotation.satisfies_version t) ~version
-      | Arithmetic t -> (Arithmetic.satisfies_version t) ~version
-      | Atomic t -> (Atomic.satisfies_version t) ~version
-      | Barrier t -> (Barrier.satisfies_version t) ~version
-      | Bit t -> (Bit.satisfies_version t) ~version
-      | Composite t -> (Composite.satisfies_version t) ~version
-      | Constant_creation t ->
-          (Constant_creation.satisfies_version t) ~version
-      | Control_flow t -> (Control_flow.satisfies_version t) ~version
-      | Conversion t -> (Conversion.satisfies_version t) ~version
-      | Debug t -> (Debug.satisfies_version t) ~version
-      | Derivative t -> (Derivative.satisfies_version t) ~version
+      | Annotation t -> Annotation.satisfies_version t ~version
+      | Arithmetic t -> Arithmetic.satisfies_version t ~version
+      | Atomic t -> Atomic.satisfies_version t ~version
+      | Barrier t -> Barrier.satisfies_version t ~version
+      | Bit t -> Bit.satisfies_version t ~version
+      | Composite t -> Composite.satisfies_version t ~version
+      | Constant_creation t -> Constant_creation.satisfies_version t ~version
+      | Control_flow t -> Control_flow.satisfies_version t ~version
+      | Conversion t -> Conversion.satisfies_version t ~version
+      | Debug t -> Debug.satisfies_version t ~version
+      | Derivative t -> Derivative.satisfies_version t ~version
       | Device_side_enqueue t ->
-          (Device_side_enqueue.satisfies_version t) ~version
-      | Exclude t -> (Exclude.satisfies_version t) ~version
-      | Extension t -> (Extension.satisfies_version t) ~version
-      | Function t -> (Function.satisfies_version t) ~version
-      | Graph t -> (Graph.satisfies_version t) ~version
-      | Group t -> (Group.satisfies_version t) ~version
-      | Image t -> (Image.satisfies_version t) ~version
-      | Memory t -> (Memory.satisfies_version t) ~version
-      | Miscellaneous t -> (Miscellaneous.satisfies_version t) ~version
-      | Mode_setting t -> (Mode_setting.satisfies_version t) ~version
-      | Non_uniform t -> (Non_uniform.satisfies_version t) ~version
-      | Pipe t -> (Pipe.satisfies_version t) ~version
-      | Primitive t -> (Primitive.satisfies_version t) ~version
+          Device_side_enqueue.satisfies_version t ~version
+      | Exclude t -> Exclude.satisfies_version t ~version
+      | Extension t -> Extension.satisfies_version t ~version
+      | Function t -> Function.satisfies_version t ~version
+      | Graph t -> Graph.satisfies_version t ~version
+      | Group t -> Group.satisfies_version t ~version
+      | Image t -> Image.satisfies_version t ~version
+      | Memory t -> Memory.satisfies_version t ~version
+      | Miscellaneous t -> Miscellaneous.satisfies_version t ~version
+      | Mode_setting t -> Mode_setting.satisfies_version t ~version
+      | Non_uniform t -> Non_uniform.satisfies_version t ~version
+      | Pipe t -> Pipe.satisfies_version t ~version
+      | Primitive t -> Primitive.satisfies_version t ~version
       | Relational_and_logical t ->
-          (Relational_and_logical.satisfies_version t) ~version
-      | Reserved t -> (Reserved.satisfies_version t) ~version
-      | Tensor t -> (Tensor.satisfies_version t) ~version
-      | Type_declaration t -> (Type_declaration.satisfies_version t) ~version
+          Relational_and_logical.satisfies_version t ~version
+      | Reserved t -> Reserved.satisfies_version t ~version
+      | Tensor t -> Tensor.satisfies_version t ~version
+      | Type_declaration t -> Type_declaration.satisfies_version t ~version
     let satisfies_capabilities t ~capabilities =
       match t with
-      | Annotation t -> (Annotation.satisfies_capabilities t) ~capabilities
-      | Arithmetic t -> (Arithmetic.satisfies_capabilities t) ~capabilities
-      | Atomic t -> (Atomic.satisfies_capabilities t) ~capabilities
-      | Barrier t -> (Barrier.satisfies_capabilities t) ~capabilities
-      | Bit t -> (Bit.satisfies_capabilities t) ~capabilities
-      | Composite t -> (Composite.satisfies_capabilities t) ~capabilities
+      | Annotation t -> Annotation.satisfies_capabilities t ~capabilities
+      | Arithmetic t -> Arithmetic.satisfies_capabilities t ~capabilities
+      | Atomic t -> Atomic.satisfies_capabilities t ~capabilities
+      | Barrier t -> Barrier.satisfies_capabilities t ~capabilities
+      | Bit t -> Bit.satisfies_capabilities t ~capabilities
+      | Composite t -> Composite.satisfies_capabilities t ~capabilities
       | Constant_creation t ->
-          (Constant_creation.satisfies_capabilities t) ~capabilities
-      | Control_flow t ->
-          (Control_flow.satisfies_capabilities t) ~capabilities
-      | Conversion t -> (Conversion.satisfies_capabilities t) ~capabilities
-      | Debug t -> (Debug.satisfies_capabilities t) ~capabilities
-      | Derivative t -> (Derivative.satisfies_capabilities t) ~capabilities
+          Constant_creation.satisfies_capabilities t ~capabilities
+      | Control_flow t -> Control_flow.satisfies_capabilities t ~capabilities
+      | Conversion t -> Conversion.satisfies_capabilities t ~capabilities
+      | Debug t -> Debug.satisfies_capabilities t ~capabilities
+      | Derivative t -> Derivative.satisfies_capabilities t ~capabilities
       | Device_side_enqueue t ->
-          (Device_side_enqueue.satisfies_capabilities t) ~capabilities
-      | Exclude t -> (Exclude.satisfies_capabilities t) ~capabilities
-      | Extension t -> (Extension.satisfies_capabilities t) ~capabilities
-      | Function t -> (Function.satisfies_capabilities t) ~capabilities
-      | Graph t -> (Graph.satisfies_capabilities t) ~capabilities
-      | Group t -> (Group.satisfies_capabilities t) ~capabilities
-      | Image t -> (Image.satisfies_capabilities t) ~capabilities
-      | Memory t -> (Memory.satisfies_capabilities t) ~capabilities
+          Device_side_enqueue.satisfies_capabilities t ~capabilities
+      | Exclude t -> Exclude.satisfies_capabilities t ~capabilities
+      | Extension t -> Extension.satisfies_capabilities t ~capabilities
+      | Function t -> Function.satisfies_capabilities t ~capabilities
+      | Graph t -> Graph.satisfies_capabilities t ~capabilities
+      | Group t -> Group.satisfies_capabilities t ~capabilities
+      | Image t -> Image.satisfies_capabilities t ~capabilities
+      | Memory t -> Memory.satisfies_capabilities t ~capabilities
       | Miscellaneous t ->
-          (Miscellaneous.satisfies_capabilities t) ~capabilities
-      | Mode_setting t ->
-          (Mode_setting.satisfies_capabilities t) ~capabilities
-      | Non_uniform t -> (Non_uniform.satisfies_capabilities t) ~capabilities
-      | Pipe t -> (Pipe.satisfies_capabilities t) ~capabilities
-      | Primitive t -> (Primitive.satisfies_capabilities t) ~capabilities
+          Miscellaneous.satisfies_capabilities t ~capabilities
+      | Mode_setting t -> Mode_setting.satisfies_capabilities t ~capabilities
+      | Non_uniform t -> Non_uniform.satisfies_capabilities t ~capabilities
+      | Pipe t -> Pipe.satisfies_capabilities t ~capabilities
+      | Primitive t -> Primitive.satisfies_capabilities t ~capabilities
       | Relational_and_logical t ->
-          (Relational_and_logical.satisfies_capabilities t) ~capabilities
-      | Reserved t -> (Reserved.satisfies_capabilities t) ~capabilities
-      | Tensor t -> (Tensor.satisfies_capabilities t) ~capabilities
+          Relational_and_logical.satisfies_capabilities t ~capabilities
+      | Reserved t -> Reserved.satisfies_capabilities t ~capabilities
+      | Tensor t -> Tensor.satisfies_capabilities t ~capabilities
       | Type_declaration t ->
-          (Type_declaration.satisfies_capabilities t) ~capabilities
+          Type_declaration.satisfies_capabilities t ~capabilities
     let satisfies_extensions t ~extensions =
       match t with
-      | Annotation t -> (Annotation.satisfies_extensions t) ~extensions
-      | Arithmetic t -> (Arithmetic.satisfies_extensions t) ~extensions
-      | Atomic t -> (Atomic.satisfies_extensions t) ~extensions
-      | Barrier t -> (Barrier.satisfies_extensions t) ~extensions
-      | Bit t -> (Bit.satisfies_extensions t) ~extensions
-      | Composite t -> (Composite.satisfies_extensions t) ~extensions
+      | Annotation t -> Annotation.satisfies_extensions t ~extensions
+      | Arithmetic t -> Arithmetic.satisfies_extensions t ~extensions
+      | Atomic t -> Atomic.satisfies_extensions t ~extensions
+      | Barrier t -> Barrier.satisfies_extensions t ~extensions
+      | Bit t -> Bit.satisfies_extensions t ~extensions
+      | Composite t -> Composite.satisfies_extensions t ~extensions
       | Constant_creation t ->
-          (Constant_creation.satisfies_extensions t) ~extensions
-      | Control_flow t -> (Control_flow.satisfies_extensions t) ~extensions
-      | Conversion t -> (Conversion.satisfies_extensions t) ~extensions
-      | Debug t -> (Debug.satisfies_extensions t) ~extensions
-      | Derivative t -> (Derivative.satisfies_extensions t) ~extensions
+          Constant_creation.satisfies_extensions t ~extensions
+      | Control_flow t -> Control_flow.satisfies_extensions t ~extensions
+      | Conversion t -> Conversion.satisfies_extensions t ~extensions
+      | Debug t -> Debug.satisfies_extensions t ~extensions
+      | Derivative t -> Derivative.satisfies_extensions t ~extensions
       | Device_side_enqueue t ->
-          (Device_side_enqueue.satisfies_extensions t) ~extensions
-      | Exclude t -> (Exclude.satisfies_extensions t) ~extensions
-      | Extension t -> (Extension.satisfies_extensions t) ~extensions
-      | Function t -> (Function.satisfies_extensions t) ~extensions
-      | Graph t -> (Graph.satisfies_extensions t) ~extensions
-      | Group t -> (Group.satisfies_extensions t) ~extensions
-      | Image t -> (Image.satisfies_extensions t) ~extensions
-      | Memory t -> (Memory.satisfies_extensions t) ~extensions
-      | Miscellaneous t -> (Miscellaneous.satisfies_extensions t) ~extensions
-      | Mode_setting t -> (Mode_setting.satisfies_extensions t) ~extensions
-      | Non_uniform t -> (Non_uniform.satisfies_extensions t) ~extensions
-      | Pipe t -> (Pipe.satisfies_extensions t) ~extensions
-      | Primitive t -> (Primitive.satisfies_extensions t) ~extensions
+          Device_side_enqueue.satisfies_extensions t ~extensions
+      | Exclude t -> Exclude.satisfies_extensions t ~extensions
+      | Extension t -> Extension.satisfies_extensions t ~extensions
+      | Function t -> Function.satisfies_extensions t ~extensions
+      | Graph t -> Graph.satisfies_extensions t ~extensions
+      | Group t -> Group.satisfies_extensions t ~extensions
+      | Image t -> Image.satisfies_extensions t ~extensions
+      | Memory t -> Memory.satisfies_extensions t ~extensions
+      | Miscellaneous t -> Miscellaneous.satisfies_extensions t ~extensions
+      | Mode_setting t -> Mode_setting.satisfies_extensions t ~extensions
+      | Non_uniform t -> Non_uniform.satisfies_extensions t ~extensions
+      | Pipe t -> Pipe.satisfies_extensions t ~extensions
+      | Primitive t -> Primitive.satisfies_extensions t ~extensions
       | Relational_and_logical t ->
-          (Relational_and_logical.satisfies_extensions t) ~extensions
-      | Reserved t -> (Reserved.satisfies_extensions t) ~extensions
-      | Tensor t -> (Tensor.satisfies_extensions t) ~extensions
+          Relational_and_logical.satisfies_extensions t ~extensions
+      | Reserved t -> Reserved.satisfies_extensions t ~extensions
+      | Tensor t -> Tensor.satisfies_extensions t ~extensions
       | Type_declaration t ->
-          (Type_declaration.satisfies_extensions t) ~extensions
+          Type_declaration.satisfies_extensions t ~extensions
   end
